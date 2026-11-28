@@ -2,13 +2,18 @@
 
 A fighting-game character select for the *Alter Ego* trailer by William Yao. Fifteen classmates appear as their alter egos: each has an idle loop and a "selected" move.
 
-**Play it:**
+**Play it** (in the colours of the *Alter Egos* poster):
 - Landscape: https://thewilliamyao.github.io/alter-ego-select/
-- Vertical, drawn like the *Alter Egos* poster, for vertical video: https://thewilliamyao.github.io/alter-ego-select/poster.html
+- Vertical, for vertical video: https://thewilliamyao.github.io/alter-ego-select/poster.html
+
+Earlier looks:
+- [Landscape, green](https://thewilliamyao.github.io/alter-ego-select/index-v1.html)
+- [Vertical, green](https://thewilliamyao.github.io/alter-ego-select/poster-v1.html)
+- [Vertical, laid out like the *Alter Egos* poster](https://thewilliamyao.github.io/alter-ego-select/poster-v2.html)
 
 ![Alter Ego character select](preview.jpg)
 
-![Alter Ego character select, vertical poster version](preview-poster.jpg)
+![Alter Ego character select, vertical version](preview-poster.jpg)
 
 ## Controls
 

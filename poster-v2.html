@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Alter Egos Select</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Questrial&display=swap">
+<style>
+/* Alter Egos character select, vertical (1080x1920, for vertical video), drawn like William's Nov 27
+   "Alter Egos" poster: black, a lime + pink 2008 grunge collage, a speaker in a hot pink ring (RANDOM),
+   white pink-bordered cards with black silhouettes spiralling round it, thin geometric type.
+   The picked fighter plays on a big card of the same kind, in front of everything. */
+:root{
+  color-scheme: dark;
+  --ink:#0a0a09; --paper:#f6f3f4;
+  --lime:#accb16; --lime2:#c4e31c; --olive:#4c5c15; --olive2:#748617;
+  --pink:#ec73aa; --hot:#e8408f; --pinkd:#b8527a;
+  --font:'Questrial','Century Gothic','Avenir Next','Futura',sans-serif;
+}
+html,body{height:100%;margin:0;background:#000;overflow:hidden}
+#viewport{position:fixed;inset:0;background:#000;overflow:hidden}
+#viewport.nocursor,#viewport.nocursor *{cursor:none!important}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:var(--ink);color:#fff;font-family:var(--font);user-select:none;-webkit-user-select:none}
+#shaker{position:absolute;inset:0}
+.layer{position:absolute}
+#bgCanvas{left:0;top:0;width:1080px;height:1920px}
+
+/* ---------- the speaker = RANDOM ---------- */
+#hub{left:0;top:0;width:1080px;height:1920px;pointer-events:none}
+#hub > *{position:absolute;left:var(--hx);top:var(--hy);transform:translate(-50%,-50%)}
+#hubGlow{width:470px;height:470px;border-radius:50%;box-shadow:0 0 0 0 rgba(232,64,143,0);transition:box-shadow .25s ease}
+#stage.rand #hubGlow{box-shadow:0 0 0 6px rgba(255,255,255,.55),0 0 60px 18px rgba(232,64,143,.85)}
+#speaker{width:300px;height:300px;animation:thump .5s ease-out infinite}
+#stage.rand #speaker{animation-duration:.25s}
+@keyframes thump{0%{transform:translate(-50%,-50%) scale(1.03)}35%,100%{transform:translate(-50%,-50%) scale(1)}}
+#hubQ{font:400 56px/1 var(--font);color:#2a2a2a;text-shadow:0 1px 0 rgba(255,255,255,.6);margin-top:-2px;transition:color .2s}
+#hubLabel{font:400 17px/1 var(--font);letter-spacing:7px;padding-left:7px;color:#fff;text-shadow:0 0 6px #000,0 0 2px #000;margin-top:78px}
+#stage.rand #hubQ{color:var(--hot);animation:flick .16s steps(2,end) infinite}
+#hubHit{width:290px;height:290px;border-radius:50%;pointer-events:auto;cursor:pointer}
+@keyframes flick{50%{opacity:.5}}
+
+/* ---------- the cards ---------- */
+#cards{left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:10}
+.card{position:absolute;left:0;top:0;width:var(--w);height:var(--h);margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2);pointer-events:auto;cursor:pointer;
+  transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(var(--s,1));transition:transform .16s cubic-bezier(.25,.9,.3,1),opacity .3s ease;will-change:transform}
+.card .in{position:absolute;inset:0}
+.card .face{position:absolute;inset:0;background-color:var(--paper);background-image:var(--grain);border:4px solid var(--pink);border-radius:5px;box-shadow:0 10px 18px rgba(0,0,0,.6);overflow:hidden}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none}
+.card img.col{opacity:0}
+.card .badge{position:absolute;left:-16px;top:-18px;padding:6px 12px 4px;border-radius:999px;font:400 21px/1 var(--font);letter-spacing:2px;color:#fff;background:var(--hot);box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--lime);opacity:0;transform:scale(.6) rotate(calc(var(--r) * -1));transition:opacity .15s,transform .2s cubic-bezier(.25,1.6,.4,1)}
+.card.on{--s:1.12;z-index:40}
+.card.on .face{border-color:var(--hot);box-shadow:0 0 0 4px var(--lime),0 0 30px rgba(196,227,28,.7),0 12px 20px rgba(0,0,0,.6)}
+.card.on img.col{opacity:1}
+.card.on img.blk{opacity:0}
+.card.on .badge{opacity:1;transform:scale(1) rotate(calc(var(--r) * -1))}
+.card.blank{pointer-events:none;cursor:default}
+#stage.roulette .card,#stage.roulette .card .badge{transition-duration:.05s}
+#stage.locked .card:not(.on){opacity:.45}
+
+/* ---------- the big card (the picked fighter) ---------- */
+#heroCard{z-index:15;pointer-events:none;background-color:var(--paper);background-image:var(--grain);border:9px solid var(--pink);border-radius:7px;
+  box-shadow:0 26px 50px rgba(0,0,0,.75),0 0 0 3px rgba(10,10,9,.6);transform:rotate(var(--hr))}
+#heroCard .q{position:absolute;left:0;right:0;top:40px;text-align:center;font:400 460px/1 var(--font);color:transparent;-webkit-text-stroke:4px rgba(232,64,143,.45);display:none}
+#stage.rand #heroCard .q{display:block;animation:flick .16s steps(2,end) infinite}
+#cap{position:absolute;left:34px;right:30px;bottom:24px}
+#cap-no{font:400 26px/1 var(--font);letter-spacing:8px;color:var(--hot)}
+#cap-name{font:400 104px/1.02 var(--font);letter-spacing:-1px;color:var(--ink);white-space:nowrap}
+
+/* ---------- READY band ---------- */
+#band{left:0;top:1300px;width:1080px;height:180px;pointer-events:none;visibility:hidden;z-index:20}
+#band .bg{position:absolute;inset:0;transform:scaleY(0);transition:transform .2s cubic-bezier(.2,.9,.3,1);background:linear-gradient(90deg,rgba(232,64,143,.95),#ec73aa 50%,rgba(232,64,143,.95));border-top:5px solid var(--lime);border-bottom:5px solid var(--lime);box-shadow:0 0 40px rgba(232,64,143,.6)}
+#band .bg::after{content:"";position:absolute;inset:0;background-image:var(--grain);opacity:.6}
+#band .txt{position:absolute;left:540px;top:16px;transform:translateX(-50%);font:400 136px/1 var(--font);letter-spacing:26px;padding-left:26px;white-space:nowrap;display:flex;color:#fff;text-shadow:5px 6px 0 var(--ink)}
+#band .txt span{display:inline-block;opacity:0;transform:translateY(40px)}
+#band .sub{position:absolute;left:540px;bottom:12px;transform:translateX(-50%);font:400 25px/1 var(--font);letter-spacing:9px;color:#fff;white-space:nowrap;opacity:0;text-shadow:2px 2px 0 var(--ink)}
+#stage.locked #band{visibility:visible}
+#stage.locked #band .bg{transform:scaleY(1)}
+#stage.locked #band .txt span{animation:letterIn .32s cubic-bezier(.2,.9,.3,1) forwards;animation-delay:calc(var(--i) * 45ms + 100ms)}
+#stage.locked #band .sub{animation:appear .3s .45s forwards}
+@keyframes letterIn{to{opacity:1;transform:none}}
+@keyframes appear{to{opacity:1}}
+
+/* ---------- the fighter ---------- */
+#hero{left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:30}
+#fig{left:0;top:0;width:1080px;height:1920px;transform-origin:var(--fx) var(--fy);filter:drop-shadow(0 0 2.2px rgba(255,255,255,.95))}
+#fig .fm{position:absolute;display:block;opacity:0;object-fit:fill;pointer-events:none}
+#randImg{position:absolute;opacity:0;filter:brightness(.25)}
+#stage.rand #randImg{opacity:1}
+
+/* ---------- title + hints ---------- */
+#title{left:0;top:0;width:1080px;height:520px;pointer-events:none;z-index:40;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+#t-alter{position:absolute;left:44px;top:192px;font:400 174px/1 var(--font);letter-spacing:-3px}
+#t-egos{position:absolute;left:434px;top:56px;font:400 206px/1 var(--font);letter-spacing:-3px}
+#t-info{position:absolute;left:58px;top:396px;font:400 31px/1.28 var(--font);letter-spacing:.5px;text-transform:uppercase}
+#hints{left:34px;bottom:22px;z-index:40;display:flex;gap:16px;font:400 17px/1 var(--font);letter-spacing:2px;color:#fff;transition:opacity .3s}
+#hints kbd{font:400 15px/1 var(--font);padding:4px 7px 3px;margin-right:5px;color:var(--ink);background:var(--lime);border-radius:4px}
+#stage.nohints #hints{opacity:0}
+#flash{z-index:50;left:0;top:0;width:1080px;height:1920px;background:radial-gradient(circle at 60% 65%,#fff 0%,#ffd2e8 45%,#ec73aa 100%);opacity:0;pointer-events:none}
+
+/* ---------- intro (R replays) ---------- */
+@keyframes fadeIn{from{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.3) rotate(-30deg)}}
+@keyframes speakerIn{from{opacity:0;transform:translate(-50%,-50%) scale(.4)}}
+@keyframes titleIn{from{opacity:0;transform:translateY(-40px)}}
+@keyframes cardUp{from{opacity:0;transform:translateY(240px) rotate(var(--hr))}to{transform:rotate(var(--hr))}}
+@keyframes heroIn{from{opacity:0;transform:translateY(80px)}}
+#stage.intro #bgCanvas{animation:fadeIn .5s both}
+#stage.intro #speaker{animation:speakerIn .6s .2s cubic-bezier(.2,1.4,.4,1) both}
+#stage.intro .card .in{animation:popIn .4s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--k) * 40ms + .45s)}
+#stage.intro #title{animation:titleIn .6s .1s cubic-bezier(.2,.9,.3,1) both}
+#stage.intro #heroCard{animation:cardUp .6s .8s cubic-bezier(.2,.9,.3,1) both}
+#stage.intro #hero{animation:heroIn .6s 1s cubic-bezier(.2,.9,.3,1) both}
+@media (prefers-reduced-motion: reduce){
+  #speaker{animation:none!important}
+  #stage.intro *{animation-duration:.01s!important;animation-delay:0s!important}
+}
+</style>
+</head>
+<body>
+<div id="viewport">
+<div id="stage" class="intro">
+<div id="shaker">
+  <canvas id="bgCanvas" class="layer" width="1620" height="2880"></canvas>
+
+  <div id="hub" class="layer">
+    <div id="hubGlow"></div>
+    <canvas id="speaker" width="600" height="600"></canvas>
+    <div id="hubQ">?</div>
+    <div id="hubLabel"></div>
+    <div id="hubHit"></div>
+  </div>
+
+  <div id="cards" class="layer"></div>
+
+  <div id="heroCard" class="layer"><div class="q">?</div><div id="cap"><div id="cap-no"></div><div id="cap-name"></div></div></div>
+
+  <div id="band" class="layer"><div class="bg"></div><div class="txt"></div><div class="sub"></div></div>
+
+  <div id="hero" class="layer"><div id="fig" class="layer"><img id="randImg" alt=""></div></div>
+
+  <div id="title" class="layer"><div id="t-alter"></div><div id="t-egos"></div><div id="t-info"></div></div>
+  <div id="hints" class="layer"><span><kbd>&larr;&rarr;&uarr;&darr;</kbd>MOVE</span><span><kbd>ENTER</kbd>SELECT</span><span><kbd>ESC</kbd>BACK</span></div>
+  <div id="flash" class="layer"></div>
+</div>
+</div>
+</div>
+
+<script src="media/roster.js"></script>
+<script>
+/* =====================================================================
+   EDIT HERE. The fighters (order, videos, sizes) come from media/roster.js.
+   ===================================================================== */
+const CONFIG = {
+  title:      ['Alter', 'Egos'],
+  info:       ['The&nbsp; Garage @ NYU, 370 Jay St', 'Dec 12'],
+  randomName: 'RANDOM',
+  readyText:  'READY',
+  showHints:  false,               // H shows them (off: this version is for recording vertical video)
+  hub: { x: 640, y: 1038, ring: 207 },                 // the speaker (RANDOM) and its pink ring
+  outer: { r: 470, w: 170, h: 220, from: 330, to: 150, n: 11, tilt: 30 },   // card rows round the speaker:
+  inner: { r: 330, w: 150, h: 194, from: 315, to: 185, n: 7, tilt: 24 },    // angles in degrees, 270 = top, 180 = left
+  blanks: [0, 14, 17],             // which places (in order round the spiral) are blank cards, like the poster
+  heroCard: { x: 690, y: 1572, w: 590, h: 680, tilt: -3 },
+  floorX: 690, floorY: 1765,       // the picked fighter's feet
+  figScale: .78,                   // fighter size (1 = the landscape version's)
+  lyingX: 690, lyingLift: 150,     // a lying fighter (Nujum)
+  hoverDelay: 60,
+  startWith: 0,
+  fighters: {},
+};
+/* ===================================================================== */
+
+(() => {
+const $ = s => document.querySelector(s);
+const D2R = Math.PI / 180;
+const MEDIA = window.ALTER_EGO_MEDIA;
+if (!MEDIA || !MEDIA.fighters || !MEDIA.fighters.length) {
+  document.body.insertAdjacentHTML('beforeend', '<p style="position:fixed;left:24px;top:24px;color:#fff;font:16px system-ui">media/roster.js is missing. Run tools/build_media.py.</p>');
+  return;
+}
+const STORE = MEDIA.store;
+const ROSTER = MEDIA.fighters.map(f => Object.assign({}, f, CONFIG.fighters[f.name] || {}));
+const N = ROSTER.length, RANDOM = 99;
+const stage = $('#stage'), shaker = $('#shaker'), fig = $('#fig'), randImg = $('#randImg');
+const attr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const UA = navigator.userAgent;
+const SAFARI = /Safari\//.test(UA) && !/Chrome\/|Chromium\/|CriOS|FxiOS|Edg\//.test(UA);
+const EXT = SAFARI ? 'mov' : 'webm';
+const H = CONFIG.hub;
+
+/* seeded random, so the collage is the same every time */
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+/* paper grain (cards, band, background) */
+const grain = (() => { const S = 160, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d'), d = g.createImageData(S, S), R = rng(7);
+  for (let i = 0; i < d.data.length; i += 4) { const v = R() * 255 | 0; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = R() < .55 ? 34 : 0; }
+  g.putImageData(d, 0, 0); return c; })();
+stage.style.setProperty('--grain', `url(${grain.toDataURL()})`);
+
+/* ---------------- text ---------------- */
+$('#t-alter').textContent = CONFIG.title[0];
+$('#t-egos').textContent = CONFIG.title[1];
+$('#t-info').innerHTML = CONFIG.info.join('<br>');
+$('#hubLabel').textContent = CONFIG.randomName;
+$('#band .txt').innerHTML = [...CONFIG.readyText].map((ch, i) => `<span style="--i:${i}">${attr(ch)}</span>`).join('');
+if (!CONFIG.showHints) stage.classList.add('nohints');
+$('#hub').style.setProperty('--hx', H.x + 'px'); $('#hub').style.setProperty('--hy', H.y + 'px');
+const HC = CONFIG.heroCard, hc = $('#heroCard');
+Object.assign(hc.style, { left: (HC.x - HC.w / 2) + 'px', top: (HC.y - HC.h / 2) + 'px', width: HC.w + 'px', height: HC.h + 'px' });
+hc.style.setProperty('--hr', HC.tilt + 'deg');
+fig.style.setProperty('--fx', CONFIG.floorX + 'px'); fig.style.setProperty('--fy', CONFIG.floorY + 'px');
+
+/* ---------------- the collage (drawn once) ---------------- */
+function drawBackground() {
+  const cv = $('#bgCanvas'), K = cv.width / 1080, g = cv.getContext('2d'), R = rng(2027);
+  const rnd = (a, b) => a + (b - a) * R();
+  g.setTransform(K, 0, 0, K, 0, 0);
+  g.fillStyle = '#0a0a09'; g.fillRect(0, 0, 1080, 1920);
+  const C = { lime: '#accb16', lime2: '#c4e31c', olive: '#4c5c15', olive2: '#748617', pink: '#ec73aa', hot: '#e8408f', pinkd: '#b8527a', grey: '#35302f', grey2: '#5e564a', dark: '#1b1918' };
+  const blob = (x, y, r, col, n = 14, rough = .35) => { g.fillStyle = col; g.beginPath();
+    for (let i = 0; i <= n; i++) { const a = i / n * Math.PI * 2, rr = r * (1 + rough * (R() - .5)); i ? g.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)) : g.moveTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
+    g.closePath(); g.fill(); };
+  const dot = (x, y, r, col) => { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
+  const splat = (x, y, r, col, drops = 26, reach = 2.2) => {
+    blob(x, y, r, col, 18, .5);
+    for (let i = 0; i < drops; i++) { const a = rnd(0, Math.PI * 2), d = r * rnd(.9, reach), w = rnd(2, r * .22);
+      g.strokeStyle = col; g.lineCap = 'round'; g.lineWidth = w; g.beginPath(); g.moveTo(x + r * .6 * Math.cos(a), y + r * .6 * Math.sin(a)); g.lineTo(x + d * Math.cos(a), y + d * Math.sin(a)); g.stroke();
+      dot(x + (d + rnd(6, 30)) * Math.cos(a), y + (d + rnd(6, 30)) * Math.sin(a), rnd(2, w * .8 + 2), col); }
+  };
+  const ring = (x, y, r, w, col, a0 = 0, a1 = Math.PI * 2) => { g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'butt'; g.beginPath(); g.arc(x, y, r, a0, a1); g.stroke(); };
+  const swirl = (x, y, r, turns, w, col, a0 = 0, dir = 1) => {   // tapered spiral curl
+    g.strokeStyle = col; g.lineCap = 'round'; const steps = 90; let px, py;
+    for (let i = 0; i <= steps; i++) { const t = i / steps, a = a0 + dir * t * turns * Math.PI * 2, rr = r * (1 - t * .92);
+      const nx = x + rr * Math.cos(a), ny = y + rr * Math.sin(a);
+      if (i) { g.lineWidth = Math.max(1, w * (1 - t * .85)); g.beginPath(); g.moveTo(px, py); g.lineTo(nx, ny); g.stroke(); } px = nx; py = ny; }
+  };
+  const flower = (x, y, r, col, petals = 6, rot = 0) => { g.fillStyle = col;
+    for (let i = 0; i < petals; i++) { const a = rot + i / petals * Math.PI * 2; g.save(); g.translate(x + r * .55 * Math.cos(a), y + r * .55 * Math.sin(a)); g.rotate(a); g.beginPath(); g.ellipse(0, 0, r * .55, r * .26, 0, 0, 7); g.fill(); g.restore(); }
+    dot(x, y, r * .22, '#0a0a09'); };
+  const leaf = (x, y, len, ang, col) => { g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = col; g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(len * .5, -len * .32, len, 0); g.quadraticCurveTo(len * .5, len * .32, 0, 0); g.fill(); g.restore(); };
+  const rrect = (x, y, w, h, rad, ang, col) => { g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = col; g.beginPath(); g.roundRect(-w / 2, -h / 2, w, h, rad); g.fill(); g.restore(); };
+
+  // dark grunge underneath
+  for (let i = 0; i < 16; i++) splat(rnd(0, 1080), rnd(0, 1920), rnd(30, 90), i % 3 ? C.dark : '#24211f', 14, 2.6);
+  // olive rings, circles and bars (top left behind "Alter", left side)
+  ring(250, 330, 150, 28, C.olive); ring(250, 330, 104, 10, 'rgba(116,134,23,.6)');
+  dot(118, 150, 52, C.olive); dot(118, 150, 26, '#0a0a09');
+  ring(70, 1330, 120, 22, C.olive, 0, Math.PI * 2); dot(170, 1490, 40, 'rgba(116,134,23,.8)');
+  for (let i = 0; i < 9; i++) { g.fillStyle = i % 2 ? C.olive : C.olive2; g.fillRect(rnd(790, 1060), rnd(0, 120), rnd(6, 20), rnd(180, 520)); }
+  // grey rings top right and left
+  ring(930, 250, 92, 24, C.grey); ring(1040, 420, 64, 16, C.grey2); ring(870, 470, 40, 10, C.grey);
+  dot(990, 130, 34, C.grey); ring(110, 760, 70, 14, C.grey);
+  // translucent pink slabs behind the speaker
+  rrect(430, 1080, 250, 440, 30, .3, 'rgba(236,115,170,.42)');
+  rrect(905, 880, 200, 300, 26, -.25, 'rgba(184,82,122,.5)');
+  rrect(980, 1330, 180, 260, 24, .2, 'rgba(236,115,170,.32)');
+  // lime and olive rays rising from the speaker to the top
+  for (let i = 0; i < 34; i++) {
+    const a = rnd(252, 312) * D2R, r0 = rnd(150, 260), r1 = rnd(700, 1200), w = rnd(4, 30);
+    g.strokeStyle = i % 4 === 0 ? C.olive2 : i % 3 === 0 ? C.olive : (i % 2 ? C.lime : C.lime2); g.globalAlpha = rnd(.75, 1); g.lineWidth = w; g.lineCap = 'butt';
+    g.beginPath(); g.moveTo(H.x + r0 * Math.cos(a), H.y + r0 * Math.sin(a)); g.lineTo(H.x + r1 * Math.cos(a), H.y + r1 * Math.sin(a)); g.stroke();
+    if (R() < .4) { g.lineCap = 'round'; g.lineWidth = w * .6; const rr = r1 + rnd(20, 60); g.beginPath(); g.moveTo(H.x + (r1 + 8) * Math.cos(a), H.y + (r1 + 8) * Math.sin(a)); g.lineTo(H.x + rr * Math.cos(a), H.y + rr * Math.sin(a)); g.stroke(); }
+  }
+  g.globalAlpha = 1;
+  // the lime oval halftone, in arcs round the speaker on the left
+  g.fillStyle = C.lime;
+  for (let r = 300; r <= 640; r += 38) {
+    const step = (24 + r * .045) / r;
+    for (let a = 128 * D2R; a <= 232 * D2R; a += step) {
+      const x = H.x + r * Math.cos(a), y = H.y + r * Math.sin(a);
+      if (x < -20 || y > 1260) continue;
+      const rx = 8 + r * .018, ry = rx * .62;
+      g.save(); g.translate(x, y); g.rotate(a + Math.PI / 2); g.beginPath(); g.ellipse(0, 0, rx, ry, 0, 0, 7); g.fill(); g.restore();
+    }
+  }
+  // pink swirls, arcs and flowers
+  ring(H.x, H.y, 560, 12, 'rgba(232,64,143,.75)', 2.2, 3.9);
+  ring(H.x, H.y, 610, 5, 'rgba(236,115,170,.6)', 2.5, 4.4);
+  swirl(330, 560, 70, 2.2, 14, C.pink, 0, 1); swirl(205, 255, 46, 1.8, 10, C.hot, 2, -1);
+  swirl(890, 1150, 80, 2.1, 15, C.pink, 1, -1); swirl(360, 1270, 64, 2, 12, C.hot, 3, 1);
+  swirl(930, 700, 50, 1.9, 10, C.pinkd, 0, 1); swirl(560, 760, 38, 1.8, 8, C.pink, 4, -1);
+  g.strokeStyle = C.pink; g.lineWidth = 9; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(60, 520); g.bezierCurveTo(160, 380, 360, 420, 420, 300); g.stroke();
+  g.beginPath(); g.moveTo(760, 1290); g.bezierCurveTo(840, 1240, 960, 1260, 1040, 1180); g.stroke();
+  flower(470, 900, 30, C.pink, 6, .3); flower(520, 830, 22, C.pink, 6, 1); flower(805, 845, 26, C.pinkd, 6, .5); flower(880, 1270, 22, C.pink, 5, .2);
+  for (const [x, y, l, a] of [[455, 960, 46, -.6], [500, 880, 38, -1.4], [830, 900, 40, .7], [760, 330, 44, -2.2], [700, 380, 34, -.8], [1010, 600, 40, 2.4]]) leaf(x, y, l, a, R() < .5 ? C.lime : C.olive2);
+  // pink paint marks round the title
+  splat(380, 200, 22, C.pink, 10, 2); splat(700, 40, 18, C.pink, 8, 2.4);
+  // the hot pink ring round the speaker, then the lime splash it sits in
+  ring(H.x, H.y, H.ring, 34, C.hot); ring(H.x, H.y, H.ring - 28, 3, 'rgba(236,115,170,.7)');
+  splat(H.x, H.y, 150, C.lime, 46, 2.05);
+  for (let i = 0; i < 14; i++) { const a = rnd(0, Math.PI * 2), d = rnd(160, 300); dot(H.x + d * Math.cos(a), H.y + d * Math.sin(a), rnd(4, 14), '#0a0a09'); }
+  splat(H.x - 150, H.y + 160, 18, C.lime2, 10, 3); splat(H.x + 210, H.y - 120, 16, C.lime2, 10, 3);
+  // grain over everything
+  g.globalAlpha = .9; g.fillStyle = g.createPattern(grain, 'repeat'); g.fillRect(0, 0, 1080, 1920); g.globalAlpha = 1;
+}
+drawBackground();
+
+/* ---------------- the speaker ---------------- */
+(function drawSpeaker() {
+  const cv = $('#speaker'), g = cv.getContext('2d'), S = cv.width / 300, R = rng(12);
+  g.setTransform(S, 0, 0, S, 150 * S, 150 * S);
+  const rad = (r0, r1, stops) => { const gr = g.createRadialGradient(0, 0, r0, 0, 0, r1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
+  g.fillStyle = '#0d0d0d'; g.beginPath(); g.arc(0, 0, 148, 0, 7); g.fill();                               // frame
+  const rim = g.createLinearGradient(-140, -140, 140, 140); rim.addColorStop(0, '#9a9a9a'); rim.addColorStop(.45, '#3a3a3a'); rim.addColorStop(1, '#1a1a1a');
+  g.strokeStyle = rim; g.lineWidth = 7; g.beginPath(); g.arc(0, 0, 143, 0, 7); g.stroke();
+  for (const a of [45, 135, 225, 315]) { const x = 132 * Math.cos(a * D2R), y = 132 * Math.sin(a * D2R); g.fillStyle = '#8c8c8c'; g.beginPath(); g.arc(x, y, 5.5, 0, 7); g.fill(); g.fillStyle = '#222'; g.fillRect(x - 3.5, y - .8, 7, 1.6); }
+  g.fillStyle = rad(100, 126, [[0, '#121212'], [.5, '#3a3a3a'], [1, '#0c0c0c']]); g.beginPath(); g.arc(0, 0, 126, 0, 7); g.fill();   // surround
+  g.fillStyle = rad(44, 104, [[0, '#d9d9d9'], [.35, '#9c9c9c'], [.8, '#565656'], [1, '#2c2c2c']]); g.beginPath(); g.arc(0, 0, 104, 0, 7); g.fill();   // cone
+  g.fillStyle = 'rgba(0,0,0,.55)';                                                                          // halftone print on the cone
+  for (let y = -104; y <= 104; y += 6) for (let x = -104; x <= 104; x += 6) { const d = Math.hypot(x, y); if (d > 102 || d < 46) continue; const r = .4 + 2.1 * ((d - 46) / 58); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+  g.strokeStyle = 'rgba(255,255,255,.12)'; g.lineWidth = 1.2; for (const r of [58, 72, 88]) { g.beginPath(); g.arc(0, 0, r, 0, 7); g.stroke(); }
+  const cap = g.createRadialGradient(-14, -16, 2, 0, 0, 46); cap.addColorStop(0, '#ffffff'); cap.addColorStop(.35, '#c8c8c8'); cap.addColorStop(.75, '#5a5a5a'); cap.addColorStop(1, '#151515');
+  g.fillStyle = cap; g.beginPath(); g.arc(0, 0, 46, 0, 7); g.fill();                                           // dust cap
+  g.fillStyle = 'rgba(255,255,255,.75)'; g.beginPath(); g.ellipse(-12, -24, 12, 6, -.5, 0, 7); g.fill();
+  for (let i = 0; i < 9; i++) { const a = R() * 7, d = 50 + R() * 50; g.fillStyle = '#0a0a09'; g.beginPath(); g.arc(d * Math.cos(a), d * Math.sin(a), 2 + R() * 6, 0, 7); g.fill(); }   // paint specks
+})();
+
+/* ---------------- the cards ---------------- */
+const slots = [];
+for (const [row, inner] of [[CONFIG.inner, true], [CONFIG.outer, false]])
+  for (let i = 0; i < row.n; i++) { const deg = row.from + (row.to - row.from) * i / (row.n - 1); slots.push({ deg, row, inner }); }
+const order = slots.slice().sort((a, b) => b.deg - a.deg);   // round the spiral from the top right
+order.forEach((s, i) => s.blank = CONFIG.blanks.includes(i));
+let fk = 0; order.forEach(s => { if (!s.blank && fk < N) s.k = fk++; });
+const POS = new Map();
+let html = '';
+slots.forEach((s, i) => {      // inner row first, so the outer row lies on top
+  const a = s.deg * D2R, x = H.x + s.row.r * Math.cos(a), y = H.y + s.row.r * Math.sin(a);
+  const r = -s.row.tilt * Math.sin(2 * a) + ((i * 37) % 11 - 5) * .9;
+  const st = `--x:${x.toFixed(1)}px;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg;--w:${s.row.w}px;--h:${s.row.h}px;--k:${i}`;
+  if (s.k === undefined) { html += `<div class="card blank" style="${st}"><div class="in"><div class="face"></div></div></div>`; return; }
+  const f = ROSTER[s.k];
+  POS.set(s.k, [x - H.x, y - H.y]);
+  html += `<div class="card" data-k="${s.k}" style="${st}"><div class="in"><div class="face"><img class="blk" src="media/${attr(f.dir)}/card_black.webp" alt="${attr(f.name)}" draggable="false"><img class="col" src="media/${attr(f.dir)}/card_color.webp" alt="" draggable="false"></div><div class="badge">1P</div></div></div>`;
+});
+$('#cards').innerHTML = html;
+POS.set(RANDOM, [0, 0]);
+const cardEls = [], badgeEls = [];
+document.querySelectorAll('.card[data-k]').forEach(el => { const k = +el.dataset.k; cardEls[k] = el; badgeEls[k] = el.querySelector('.badge'); });
+// cards fall back to the plain card image if the black/colour ones aren't built yet
+document.querySelectorAll('.card img').forEach(im => { im.onerror = () => { im.onerror = null; im.src = im.src.replace(/card_(black|color)/, 'card'); }; });
+
+/* ---------------- fighter media ---------------- */
+function place(el, m) {
+  const S = CONFIG.figScale / STORE;
+  el.style.width = (m.w * S).toFixed(1) + 'px';
+  el.style.height = (m.h * S).toFixed(1) + 'px';
+  if (m.lying) {
+    el.style.left = (CONFIG.lyingX - m.w * S / 2).toFixed(1) + 'px';
+    el.style.top = (CONFIG.floorY - CONFIG.lyingLift - m.ay * S).toFixed(1) + 'px';
+  } else {
+    el.style.left = (CONFIG.floorX - m.ax * S).toFixed(1) + 'px';
+    el.style.top = (CONFIG.floorY - m.ay * S).toFixed(1) + 'px';
+  }
+}
+function video(src, loop) {
+  const v = document.createElement('video');
+  v.muted = true; v.defaultMuted = true; v.playsInline = true; v.loop = loop; v.className = 'fm';
+  v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+  v.preload = loop ? 'auto' : 'none';
+  v.src = src;
+  return v;
+}
+const media = [];
+let shown = -1;
+function mediaFor(k) {
+  if (media[k]) return media[k];
+  const f = ROSTER[k], base = `media/${f.dir}/`;
+  const poster = new Image(); poster.className = 'fm'; poster.alt = ''; poster.src = base + 'poster.webp';
+  const idle = video(base + 'idle.' + EXT, true), sel = video(base + 'selected.' + EXT, false);
+  place(poster, f.idle); place(idle, f.idle); place(sel, f.selected);
+  fig.append(poster, idle, sel);
+  const m = media[k] = { poster, idle, sel, idleOK: false, selLoading: false };
+  idle.addEventListener('playing', () => { m.idleOK = true; if (shown === k && !(locked && m.selOn)) layer(m, 'idle'); });
+  sel.addEventListener('playing', () => { if (shown === k && locked) { m.selOn = true; layer(m, 'sel'); } });
+  return m;
+}
+function layer(m, which) {
+  m.poster.style.opacity = which === 'poster' ? 1 : 0;
+  m.idle.style.opacity = which === 'idle' ? 1 : 0;
+  m.sel.style.opacity = which === 'sel' ? 1 : 0;
+}
+function hideFighter() {
+  if (shown >= 0 && media[shown]) { const m = media[shown]; layer(m, 'none'); m.idle.pause(); m.sel.pause(); m.selOn = false; }
+  shown = -1;
+}
+let selT = null;
+function showFighter(k, fast) {
+  if (shown !== k) hideFighter();
+  shown = k;
+  const m = mediaFor(k);
+  clearTimeout(selT);
+  if (fast) { layer(m, 'poster'); return; }
+  layer(m, m.idleOK ? 'idle' : 'poster');
+  m.idle.play().catch(() => {});
+  selT = setTimeout(() => { if (!m.selLoading) { m.selLoading = true; m.sel.preload = 'auto'; m.sel.load(); } }, 180);
+}
+function playSelected(k) {
+  const m = mediaFor(k);
+  shown = k;
+  if (!m.selLoading) { m.selLoading = true; m.sel.preload = 'auto'; }
+  m.selOn = false;
+  m.sel.currentTime = 0;
+  m.sel.play().catch(() => {});
+  m.idle.pause();
+}
+function backToIdle(k) {
+  const m = media[k]; if (!m) return;
+  m.sel.pause(); m.selOn = false;
+  layer(m, m.idleOK ? 'idle' : 'poster');
+  m.idle.play().catch(() => {});
+}
+
+/* ---------------- state ---------------- */
+let cur = null, locked = false, busy = false, randTimer = null;
+function setCaption(no, name, anim) {
+  $('#cap-no').textContent = no;
+  const el = $('#cap-name'); el.textContent = name; el.style.fontSize = '104px';
+  const max = HC.w - 70; if (el.scrollWidth > max) el.style.fontSize = (104 * max / el.scrollWidth).toFixed(1) + 'px';
+  if (anim) $('#cap').animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: anim === 'fast' ? 80 : 220, easing: 'ease-out' });
+}
+function select(s, mode = 'normal') {
+  if (s === cur) return;
+  cur = s;
+  cardEls.forEach((el, k) => el && el.classList.toggle('on', k === s));
+  const isRand = s === RANDOM;
+  stage.classList.toggle('rand', isRand);
+  clearInterval(randTimer);
+  if (isRand) {
+    hideFighter();
+    setCaption('NO. ??', CONFIG.randomName, mode !== 'none' && mode);
+    const tick = () => { const f = ROSTER[(Math.random() * N) | 0]; randImg.src = `media/${f.dir}/poster.webp`; place(randImg, f.idle); };
+    tick(); randTimer = setInterval(tick, 85);
+    return;
+  }
+  const f = ROSTER[s], no = String(f.no || s + 1).padStart(2, '0');
+  setCaption('NO. ' + no, f.name, mode !== 'none' && mode);
+  showFighter(s, mode === 'fast');
+  if (mode !== 'none') fig.animate([{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'none' }], { duration: mode === 'fast' ? 90 : 220, easing: 'cubic-bezier(.2,.85,.25,1)' });
+}
+function nav(dx, dy) {
+  if (locked || busy) return;
+  const [x0, y0] = POS.get(cur);
+  let best = null, bs = Infinity, by = 0;
+  for (const [k, [x, y]] of POS) {
+    if (k === cur) continue;
+    const vx = x - x0, vy = y - y0, d = Math.hypot(vx, vy), cos = (vx * dx + vy * dy) / d;
+    if (cos < .3) continue;
+    const sc = d * (1 + 2 * (1 - cos));
+    if (sc < bs - .5 || (Math.abs(sc - bs) <= .5 && y < by)) { bs = sc; best = k; by = y; }
+  }
+  if (best !== null) select(best);
+}
+function lock(k) {
+  locked = true;
+  stage.classList.add('locked');
+  $('#band .sub').textContent = `PLAYER 1 · ${ROSTER[k].name.toUpperCase()}`;
+  badgeEls[k].textContent = 'OK';
+  playSelected(k);
+  $('#flash').animate([{ opacity: .85 }, { opacity: 0 }], { duration: 480, easing: 'ease-out' });
+  shaker.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(-12px,7px)' }, { transform: 'translate(10px,-6px)' }, { transform: 'translate(-7px,4px)' }, { transform: 'translate(4px,-2px)' }, { transform: 'translate(0,0)' }], { duration: 340, easing: 'ease-out' });
+  fig.animate([{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.2,.9,.3,1)' });
+}
+function cancel() {
+  if (!locked) return;
+  locked = false;
+  stage.classList.remove('locked');
+  badgeEls.forEach(b => b && (b.textContent = '1P'));
+  if (cur !== RANDOM && cur !== null) backToIdle(cur);
+}
+function confirmSel() {
+  if (locked || busy || cur === null) return;
+  if (cur === RANDOM) roulette(); else lock(cur);
+}
+function roulette() {
+  busy = true;
+  stage.classList.add('roulette');
+  clearInterval(randTimer);
+  const target = (Math.random() * N) | 0;
+  let idx = (Math.random() * N) | 0;
+  const path = [];
+  for (;;) { idx = (idx + 1) % N; path.push(idx); if (path.length >= N && idx === target) break; }
+  let t = 0;
+  path.forEach((s, j) => { const p = j / (path.length - 1); t += 30 + 170 * p * p * p; setTimeout(() => select(s, 'fast'), t); });
+  setTimeout(() => { busy = false; stage.classList.remove('roulette'); lock(target); }, t + 300);
+}
+
+/* ---------------- input ---------------- */
+let hoverT = null;
+cardEls.forEach((el, k) => {
+  if (!el) return;
+  el.addEventListener('pointerenter', () => { clearTimeout(hoverT); hoverT = setTimeout(() => { if (!locked && !busy) select(k); }, CONFIG.hoverDelay); });
+  el.addEventListener('pointerleave', () => clearTimeout(hoverT));
+  el.addEventListener('click', () => { clearTimeout(hoverT); if (locked || busy) return; select(k); confirmSel(); });
+});
+const hubHit = $('#hubHit');
+hubHit.addEventListener('pointerenter', () => { clearTimeout(hoverT); if (!locked && !busy) select(RANDOM); });
+hubHit.addEventListener('click', () => { if (locked || busy) return; select(RANDOM); confirmSel(); });
+stage.addEventListener('contextmenu', e => { e.preventDefault(); cancel(); });
+const DIRS = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
+addEventListener('keydown', e => {
+  const k = e.key;
+  if (DIRS[k]) { e.preventDefault(); nav(...DIRS[k]); return; }
+  if (k === 'Enter' || k === ' ' || k === 'z' || k === 'Z') { e.preventDefault(); if (!e.repeat) confirmSel(); return; }
+  if (k === 'Escape' || k === 'Backspace' || k === 'x' || k === 'X') { e.preventDefault(); cancel(); return; }
+  if (e.repeat) return;
+  if (k === 'h' || k === 'H') stage.classList.toggle('nohints');
+  else if (k === 'r' || k === 'R') replay();
+  else if (k === 'f' || k === 'F') {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  }
+});
+const vp = $('#viewport');
+let idleT;
+addEventListener('pointermove', () => { vp.classList.remove('nocursor'); clearTimeout(idleT); idleT = setTimeout(() => vp.classList.add('nocursor'), 1500); });
+function replay() {
+  if (busy) return;
+  cancel();
+  stage.classList.remove('intro'); void stage.offsetWidth; stage.classList.add('intro');
+}
+
+/* ---------------- scale to window (portrait stage) ---------------- */
+function fit() {
+  const s = Math.min(vp.clientWidth / 1080, vp.clientHeight / 1920);
+  stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+}
+addEventListener('resize', fit);
+fit();
+
+const q = new URLSearchParams(location.search).get('start');
+let start = CONFIG.startWith | 0;
+if (q) start = isNaN(+q) ? ROSTER.findIndex(f => f.name.toLowerCase() === q.toLowerCase()) : +q - 1;
+select(Math.min(Math.max(start, 0), N - 1), 'none');
+document.fonts && document.fonts.ready.then(() => setCaption($('#cap-no').textContent, $('#cap-name').textContent, false));
+ROSTER.forEach((_, k) => setTimeout(() => mediaFor(k), 1600 + k * 300));
+window.ALTER_EGO = { select, lock, cancel, roster: ROSTER, ext: EXT };
+})();
+</script>
+</body>
+</html>
