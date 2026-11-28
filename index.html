@@ -57,11 +57,15 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 .r-inner b{position:absolute;inset:0;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.55),transparent 45%);-webkit-mask:radial-gradient(circle closest-side,transparent 71%,#000 72%,#000 98%,transparent 99%);mask:radial-gradient(circle closest-side,transparent 71%,#000 72%,#000 98%,transparent 99%)}
 .r-core{width:256px;height:256px;background:radial-gradient(circle at 50% 38%,#2a2a28 0%,#121211 58%,#050505 100%);box-shadow:inset 0 0 0 3px rgba(196,227,28,.55),inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(5,5,5,.9);overflow:hidden}
 .r-core::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(circle,rgba(172,203,22,.45) 1.4px,transparent 1.9px);background-size:9px 9px;-webkit-mask:radial-gradient(circle at 50% 70%,#000 0%,transparent 70%);mask:radial-gradient(circle at 50% 70%,#000 0%,transparent 70%)}
-.r-core::after{content:"";position:absolute;left:12%;top:6%;width:76%;height:42%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.32),rgba(255,255,255,0))}
-.r-core .q{position:absolute;left:0;right:0;top:44px;text-align:center;font:400 118px/1 var(--title);background:linear-gradient(180deg,#ffffff 0%,#f1f9c0 45%,#c4e31c 55%,#accb16 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(196,227,28,.7));transition:filter .2s}
-.r-core .lbl{position:absolute;left:0;right:0;bottom:46px;text-align:center;font:800 20px/1 var(--hud);letter-spacing:7px;padding-left:7px;color:var(--lime3)}
+.r-core .spk{position:absolute;left:0;top:0;width:100%;height:100%;will-change:transform}   /* the speaker (speaker.js), under the "?" */
+.r-core .spk.shine{opacity:0;will-change:opacity}
+.r-core .spk.frame{will-change:auto}
+.r-core .rnd{position:absolute;inset:0;will-change:transform}
+.r-core .q{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font:400 100px/1 var(--title);background:linear-gradient(180deg,#ffffff 0%,#f1f9c0 45%,#c4e31c 55%,#accb16 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1.5px #000) drop-shadow(0 3px 0 #000) drop-shadow(0 0 10px rgba(196,227,28,.7));transition:filter .2s}
+.r-core .lbl{position:absolute;left:0;right:0;top:75%;text-align:center;font:800 18px/1 var(--hud);letter-spacing:6px;padding-left:6px;color:var(--lime3);text-shadow:0 0 6px #000,0 0 3px #000,0 1px 0 #000}
+.r-pulse{width:356px;height:356px;opacity:0;will-change:opacity;box-shadow:0 0 42px 12px rgba(232,64,143,.9),inset 0 0 24px 7px rgba(232,64,143,.65)}   /* the pink ring's flare on each hit */
 #stage.rand .r-core{box-shadow:inset 0 0 0 3px rgba(232,64,143,.95),inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(5,5,5,.9),0 0 40px rgba(232,64,143,.8)}
-#stage.rand .r-core .q{background:linear-gradient(180deg,#ffffff 0%,#f7c6de 45%,#ec73aa 55%,#e8408f 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 14px rgba(232,64,143,.9));animation:flick .16s steps(2,end) infinite}
+#stage.rand .r-core .q{background:linear-gradient(180deg,#ffffff 0%,#f7c6de 45%,#ec73aa 55%,#e8408f 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 1.5px #000) drop-shadow(0 3px 0 #000) drop-shadow(0 0 14px rgba(232,64,143,.9));animation:flick .16s steps(2,end) infinite}
 #stage.rand .r-core .lbl{color:#f7c6de}
 .hubhit{width:360px;height:360px;pointer-events:auto;cursor:pointer}
 @keyframes spinC{to{transform:translate(-50%,-50%) rotate(360deg)}}
@@ -201,7 +205,8 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
     <div class="r-pastel"><i class="col"></i><i class="gloss"></i><i class="rim"></i></div>
     <div class="r-text"><svg viewBox="-250 -250 500 500"><defs><path id="txtRing" d="M -214 0 A 214 214 0 1 1 214 0 A 214 214 0 1 1 -214 0"/></defs><text><textPath id="txtRingPath" href="#txtRing" lengthAdjust="spacing"></textPath></text></svg></div>
     <div class="r-inner"><i></i><b></b></div>
-    <div class="r-core"><span class="q">?</span><span class="lbl" id="randLabel"></span></div>
+    <div class="r-pulse"></div>
+    <div class="r-core"><div class="rnd"><span class="q">?</span><span class="lbl" id="randLabel"></span></div></div>
     <div class="hubhit"></div>
   </div>
 
@@ -238,6 +243,7 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 </div>
 
 <script src="media/roster.js"></script>
+<script src="speaker.js"></script>
 <script>
 /* =====================================================================
    EDIT HERE: titles and per-fighter extras. The fighters themselves (order, videos,
@@ -412,6 +418,9 @@ const badgeEls = cardEls.map(el => el.querySelector('.badge'));
 // black silhouettes (card_color); the plain dark green card if the build hasn't made them
 cardEls.forEach(el => { const im = el.querySelector('img'); im.onerror = () => { im.onerror = null; im.src = im.src.replace('card_color', 'card'); }; });
 
+// the speaker under RANDOM (speaker.js): it pumps to a beat, faster while RANDOM is hovered
+const speaker = window.AlterEgoSpeaker ? AlterEgoSpeaker.build($('.r-core'), { rnd: $('.r-core .rnd'), pulse: $('.r-pulse') }) : { rate() {} };
+
 /* ---------------- fighter media (poster + idle loop + selected move) ---------------- */
 function place(el, m) {
   const lift = m.lying ? CONFIG.lyingLift : 0;   // a lying figure would hide behind the nameplate
@@ -502,6 +511,7 @@ function select(s, mode = 'normal') {
   const isRand = s === RANDOM;
   stage.classList.toggle('rand', isRand);
   hero.classList.toggle('rand', isRand);
+  speaker.rate(isRand ? 1.6 : 1);
   clearInterval(randTimer);
   if (isRand) {
     hideFighter();

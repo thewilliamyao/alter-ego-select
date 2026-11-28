@@ -57,11 +57,15 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 .r-inner .hl{background:radial-gradient(circle,transparent 175px,rgba(255,255,255,.85) 189px,transparent 205px)}
 .r-core{width:322px;height:322px;background:radial-gradient(circle at 50% 40%,#2a2a28 0%,#121211 60%,#050505 100%);box-shadow:inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(5,5,5,.9);overflow:hidden}
 .r-core::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(circle,rgba(172,203,22,.42) 1.5px,transparent 2px);background-size:10px 10px}
-.r-core .rnd{position:absolute;left:calc(50% + var(--rx,0px));top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
-.r-core .q{display:block;font:400 116px/1 var(--title);background:linear-gradient(180deg,#ffffff 0%,#f1f9c0 45%,#c4e31c 55%,#accb16 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(196,227,28,.7))}
-.r-core .lbl{display:block;font:800 18px/1 var(--hud);letter-spacing:6px;padding-left:6px;color:var(--lime3)}
+.r-core .spk{position:absolute;left:0;top:0;width:100%;height:100%;will-change:transform}   /* the speaker (speaker.js), under the "?" */
+.r-core .spk.shine{opacity:0;will-change:opacity}
+.r-core .spk.frame{will-change:auto}
+.r-core .rnd{position:absolute;inset:0;will-change:transform}
+.r-core .q{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font:400 116px/1 var(--title);background:linear-gradient(180deg,#ffffff 0%,#f1f9c0 45%,#c4e31c 55%,#accb16 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1.5px #000) drop-shadow(0 3px 0 #000) drop-shadow(0 0 10px rgba(196,227,28,.7))}
+.r-core .lbl{position:absolute;left:0;right:0;top:77%;text-align:center;font:800 18px/1 var(--hud);letter-spacing:6px;padding-left:6px;color:var(--lime3);text-shadow:0 0 6px #000,0 0 3px #000,0 1px 0 #000}
+.r-pulse{width:440px;height:440px;opacity:0;will-change:opacity;box-shadow:0 0 48px 14px rgba(232,64,143,.9),inset 0 0 28px 8px rgba(232,64,143,.65)}   /* the pink ring's flare on each hit */
 #stage.rand .r-core{box-shadow:inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(5,5,5,.9),0 0 50px rgba(232,64,143,.85)}
-#stage.rand .r-core .q{background:linear-gradient(180deg,#ffffff 0%,#f7c6de 45%,#ec73aa 55%,#e8408f 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 14px rgba(232,64,143,.9));animation:flick .16s steps(2,end) infinite}
+#stage.rand .r-core .q{background:linear-gradient(180deg,#ffffff 0%,#f7c6de 45%,#ec73aa 55%,#e8408f 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 1.5px #000) drop-shadow(0 3px 0 #000) drop-shadow(0 0 14px rgba(232,64,143,.9));animation:flick .16s steps(2,end) infinite}
 .hubhit{width:440px;height:440px;pointer-events:auto;cursor:pointer}
 @keyframes spinC{to{transform:translate(-50%,-50%) rotate(360deg)}}
 @keyframes flick{50%{opacity:.55}}
@@ -174,6 +178,7 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
     <div class="r-band"><i class="col"></i><i class="gloss"></i></div>
     <div class="r-text"><svg viewBox="-250 -250 500 500"><defs><path id="txtRing" d="M -238 0 A 238 238 0 1 1 238 0 A 238 238 0 1 1 -238 0"/></defs><text><textPath id="txtRingPath" href="#txtRing" lengthAdjust="spacing"></textPath></text></svg></div>
     <div class="r-inner"><i class="col"></i><i class="hl"></i></div>
+    <div class="r-pulse"></div>
     <div class="r-core"><div class="rnd"><span class="q">?</span><span class="lbl" id="randLabel"></span></div></div>
     <div class="hubhit"></div>
   </div>
@@ -201,6 +206,7 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 </div>
 
 <script src="media/roster.js"></script>
+<script src="speaker.js"></script>
 <script>
 /* =====================================================================
    EDIT HERE. The fighters (order, videos, sizes, colours) come from media/roster.js.
@@ -218,7 +224,7 @@ const CONFIG = {
   floorX: 330, floorY: 1852,    // the fighter's feet, stage px
   figScale: 1.18,               // the fighter is drawn this much bigger than in the landscape version
   lyingX: 500, lyingLift: 330,  // a lying fighter (Nujum): centre x and how far above the floor
-  ring: { x: 960, y: 800 },     // the ring's centre (it runs off the right edge, like the poster)
+  ring: { x: 905, y: 800 },     // the ring's centre (its outer rings run off the right edge, like the poster; x ≤ 919 keeps the speaker whole)
   inner: { r: 462, w: 176, h: 232, tilt: 30 },   // black silhouettes, just outside the pale band
   outer: { r: 724, w: 150, h: 198, tilt: 40 },   // lime silhouettes, outside the ring lines
   arc: [256, 106],              // the fan runs from this angle to that one (degrees, 180 = left)
@@ -355,8 +361,8 @@ $('#sparks').innerHTML = [[700, 80, '#c4e31c', 2.8, 0], [1020, 1260, '#ec73aa', 
 /* ---------------- cards: two rows around the left side of the ring ---------------- */
 const RC = CONFIG.ring, POS = new Map();
 $('#hub').style.setProperty('--hx', RC.x + 'px'); $('#hub').style.setProperty('--hy', RC.y + 'px');
-// RANDOM's "?" sits in the middle of the part of the core that's on screen (the ring runs off the right edge)
-{ const R = 161, visL = RC.x - R, visR = Math.min(1080, RC.x + R); $('.r-core').style.setProperty('--rx', ((visL + visR) / 2 - RC.x).toFixed(1) + 'px'); }
+// the speaker under RANDOM (speaker.js): it pumps to a beat, faster while RANDOM is hovered
+const speaker = window.AlterEgoSpeaker ? AlterEgoSpeaker.build($('.r-core'), { rnd: $('.r-core .rnd'), pulse: $('.r-pulse') }) : { rate() {} };
 $('#glowRing').style.left = (RC.x - 760) + 'px'; $('#glowRing').style.top = (RC.y - 760) + 'px';
 const [a0, a1] = CONFIG.arc;
 let html = '';
@@ -390,7 +396,8 @@ document.querySelectorAll('.card img').forEach(im => { im.onerror = () => { im.o
       <ellipse cx="${(x - 40 * s * f).toFixed(1)}" cy="${(y - 58 * s).toFixed(1)}" rx="${(13 * s).toFixed(1)}" ry="${(6 * s).toFixed(1)}" transform="rotate(${flip ? 25 : -25} ${(x - 40 * s * f).toFixed(1)} ${(y - 58 * s).toFixed(1)})" fill="#c4e31c"/>
       <circle cx="${(x + 52 * s * f).toFixed(1)}" cy="${(y + 30 * s).toFixed(1)}" r="${(5 * s).toFixed(1)}" fill="#ec73aa"/>`;
   };
-  $('#vines').innerHTML = curl(850, 300, 1.1, false) + curl(1040, 250, .9, true) + curl(905, 520, .7, false) + curl(640, 1060, .7, true);
+  const dx = CONFIG.ring.x - 960;   // placed for a ring at x 960; they follow it
+  $('#vines').innerHTML = curl(850 + dx, 300, 1.1, false) + curl(1040 + dx, 250, .9, true) + curl(905 + dx, 520, .7, false) + curl(640 + dx, 1060, .7, true);
 })();
 
 /* ---------------- fighter media ---------------- */
@@ -486,6 +493,7 @@ function select(s, mode = 'normal') {
   const isRand = s === RANDOM;
   stage.classList.toggle('rand', isRand);
   hero.classList.toggle('rand', isRand);
+  speaker.rate(isRand ? 1.6 : 1);
   clearInterval(randTimer);
   if (isRand) {
     hideFighter();
