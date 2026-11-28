@@ -3,153 +3,117 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Alter Ego Poster Select</title>
+<title>Alter Egos Select</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Audiowide&family=Exo+2:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Questrial&display=swap">
 <style>
-/* Alter Ego character select, poster version: a vertical 1080x1920 stage (for vertical video) laid out
-   like William's Alter Ego poster: a ring on the right edge, two rows of cards fanned around its left
-   side (dark green silhouettes inside, bright green outside), a halftone crowd, the fighter in front. */
-@property --c { syntax: '<color>'; inherits: true; initial-value: #ff2e93; }
+/* Alter Egos character select, vertical (1080x1920, for vertical video), drawn like William's Nov 27
+   "Alter Egos" poster: black, a lime + pink 2008 grunge collage, a speaker in a hot pink ring (RANDOM),
+   white pink-bordered cards with black silhouettes spiralling round it, thin geometric type.
+   The picked fighter plays on a big card of the same kind, in front of everything. */
 :root{
   color-scheme: dark;
-  --bg:#093c2d; --ink:#083b25;
-  --green:#19bf73; --lime:#8bf26f; --chart:#d7ff3c;
-  --pink:#ff2e93; --pink2:#ff7ac1; --blush:#ffc8e4; --cream:#fff2f9;
-  --title:'Audiowide','Exo 2',sans-serif;
-  --hud:'Exo 2','Segoe UI',system-ui,sans-serif;
+  --ink:#0a0a09; --paper:#f6f3f4;
+  --lime:#accb16; --lime2:#c4e31c; --olive:#4c5c15; --olive2:#748617;
+  --pink:#ec73aa; --hot:#e8408f; --pinkd:#b8527a;
+  --font:'Questrial','Century Gothic','Avenir Next','Futura',sans-serif;
 }
 html,body{height:100%;margin:0;background:#000;overflow:hidden}
 #viewport{position:fixed;inset:0;background:#000;overflow:hidden}
 #viewport.nocursor,#viewport.nocursor *{cursor:none!important}
-#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:var(--bg);color:var(--cream);font-family:var(--hud);user-select:none;-webkit-user-select:none;transition:--c .35s ease}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;background:var(--ink);color:#fff;font-family:var(--font);user-select:none;-webkit-user-select:none}
 #shaker{position:absolute;inset:0}
 .layer{position:absolute}
-
-/* ---------- background ---------- */
 #bgCanvas{left:0;top:0;width:1080px;height:1920px}
-#glowHero{left:-300px;top:900px;width:1300px;height:1100px;background:radial-gradient(ellipse 36% 42% at 48% 50%,color-mix(in srgb,var(--c) 40%,transparent) 0%,color-mix(in srgb,var(--c) 12%,transparent) 52%,transparent 74%);pointer-events:none}
-#glowRing{left:300px;top:0;width:1520px;height:1520px;background:radial-gradient(circle at 50% 50%,rgba(255,46,147,.25) 0%,rgba(215,255,60,.10) 36%,transparent 58%);pointer-events:none}
-.spark{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;pointer-events:none;will-change:transform,opacity;animation:twinkle var(--t,3s) ease-in-out infinite;animation-delay:var(--d,0s);filter:drop-shadow(0 0 6px var(--sc,#d7ff3c))}
-.spark path{fill:var(--sc,#d7ff3c)}
-@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.55) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
-#vines{left:0;top:0;width:1080px;height:1920px;pointer-events:none;filter:drop-shadow(0 0 6px rgba(139,242,111,.6))}
 
-/* ---------- the ring (centre on the right edge) ---------- */
-#hub{left:0;top:0;width:1080px;height:1920px;pointer-events:none}   /* stage-sized; the rings centre on --hx/--hy */
-#hub > *{position:absolute;left:var(--hx);top:var(--hy);transform:translate(-50%,-50%);border-radius:50%}
-.r-lines{width:1196px;height:1196px;border:3px solid rgba(25,191,115,.95);box-shadow:0 0 14px rgba(25,191,115,.6)}
-.r-lines::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:3px solid rgba(255,122,193,.9);box-shadow:0 0 14px rgba(255,46,147,.55)}
-.r-band{width:690px;height:690px;filter:drop-shadow(0 0 16px rgba(215,255,60,.5)) drop-shadow(0 0 30px rgba(255,46,147,.35))}
-.r-band i{position:absolute;inset:0;border-radius:50%}
-.r-band .col{-webkit-mask:radial-gradient(circle,transparent 268px,#000 269px,#000 344px,transparent 345px);mask:radial-gradient(circle,transparent 268px,#000 269px,#000 344px,transparent 345px);
-  background:radial-gradient(circle,transparent 268px,#ff7ac1 269px,#ffd2e8 276px,#d9fbc4 284px,#c4f5a8 316px,#e6ffd6 334px,#ffd2e8 340px,#ff2e93 344px)}
-.r-band .gloss{-webkit-mask:radial-gradient(circle,transparent 268px,#000 269px,#000 344px,transparent 345px);mask:radial-gradient(circle,transparent 268px,#000 269px,#000 344px,transparent 345px);background:linear-gradient(180deg,rgba(255,255,255,.65) 0%,rgba(255,255,255,.1) 40%,transparent 55%)}
-.r-text{width:500px;height:500px;border-radius:0!important;animation:spinC 46s linear infinite reverse;will-change:transform}
-.r-text svg{display:block;width:100%;height:100%;overflow:visible}
-.r-text text{font:400 23px var(--title);letter-spacing:5px;fill:#c9f7b0;transition:fill .2s}
-#stage.rand .r-text text{fill:#ff8cc8}
-.r-inner{width:440px;height:440px;filter:drop-shadow(0 0 18px rgba(255,46,147,.7)) drop-shadow(0 0 40px rgba(215,255,60,.3))}
-.r-inner i{position:absolute;inset:0;border-radius:50%;-webkit-mask:radial-gradient(circle,transparent 160px,#000 161px,#000 218px,transparent 219px);mask:radial-gradient(circle,transparent 160px,#000 161px,#000 218px,transparent 219px)}
-.r-inner .col{background:conic-gradient(from 15deg,#ff2e93 0deg,#ff7ac1 60deg,#ffd2e8 110deg,#f2ff9e 170deg,#d7ff3c 215deg,#e8ff8a 250deg,#ffc8e4 300deg,#ff2e93 360deg)}
-.r-inner .hl{background:radial-gradient(circle,transparent 175px,rgba(255,255,255,.85) 189px,transparent 205px)}
-.r-core{width:322px;height:322px;background:radial-gradient(circle at 50% 40%,#0e5a41 0%,#073324 60%,#03190f 100%);box-shadow:inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(3,23,15,.9);overflow:hidden}
-.r-core::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(circle,rgba(139,242,111,.42) 1.5px,transparent 2px);background-size:10px 10px}
-.r-core .rnd{position:absolute;left:calc(50% + var(--rx,0px));top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
-.r-core .q{display:block;font:400 116px/1 var(--title);background:linear-gradient(180deg,#ffffff 0%,#eaffb0 45%,#8bf26f 55%,#19bf73 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(215,255,60,.7))}
-.r-core .lbl{display:block;font:800 18px/1 var(--hud);letter-spacing:6px;padding-left:6px;color:#cdf7b4}
-#stage.rand .r-core{box-shadow:inset 0 10px 30px rgba(0,0,0,.6),0 0 0 6px rgba(3,23,15,.9),0 0 50px rgba(255,46,147,.85)}
-#stage.rand .r-core .q{background:linear-gradient(180deg,#ffffff 0%,#ffd2e8 45%,#ff7ac1 55%,#ff2e93 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 14px rgba(255,46,147,.9));animation:flick .16s steps(2,end) infinite}
-.hubhit{width:440px;height:440px;pointer-events:auto;cursor:pointer}
-@keyframes spinC{to{transform:translate(-50%,-50%) rotate(360deg)}}
-@keyframes flick{50%{opacity:.55}}
+/* ---------- the speaker = RANDOM ---------- */
+#hub{left:0;top:0;width:1080px;height:1920px;pointer-events:none}
+#hub > *{position:absolute;left:var(--hx);top:var(--hy);transform:translate(-50%,-50%)}
+#hubGlow{width:470px;height:470px;border-radius:50%;box-shadow:0 0 0 0 rgba(232,64,143,0);transition:box-shadow .25s ease}
+#stage.rand #hubGlow{box-shadow:0 0 0 6px rgba(255,255,255,.55),0 0 60px 18px rgba(232,64,143,.85)}
+#speaker{width:300px;height:300px;animation:thump .5s ease-out infinite}
+#stage.rand #speaker{animation-duration:.25s}
+@keyframes thump{0%{transform:translate(-50%,-50%) scale(1.03)}35%,100%{transform:translate(-50%,-50%) scale(1)}}
+#hubQ{font:400 56px/1 var(--font);color:#2a2a2a;text-shadow:0 1px 0 rgba(255,255,255,.6);margin-top:-2px;transition:color .2s}
+#hubLabel{font:400 17px/1 var(--font);letter-spacing:7px;padding-left:7px;color:#fff;text-shadow:0 0 6px #000,0 0 2px #000;margin-top:78px}
+#stage.rand #hubQ{color:var(--hot);animation:flick .16s steps(2,end) infinite}
+#hubHit{width:290px;height:290px;border-radius:50%;pointer-events:auto;cursor:pointer}
+@keyframes flick{50%{opacity:.5}}
 
-/* ---------- cards: two rows fanned around the ring ---------- */
-#cards{left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:10}  /* own stacking layer: a raised card can't pass the fighter */
+/* ---------- the cards ---------- */
+#cards{left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:10}
 .card{position:absolute;left:0;top:0;width:var(--w);height:var(--h);margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2);pointer-events:auto;cursor:pointer;
-  transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(var(--s,1));transition:transform .16s cubic-bezier(.25,.9,.3,1),opacity .3s ease;will-change:transform;
-  filter:drop-shadow(0 0 2px rgba(255,255,255,.7)) drop-shadow(0 0 9px var(--g))}
+  transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(var(--s,1));transition:transform .16s cubic-bezier(.25,.9,.3,1),opacity .3s ease;will-change:transform}
 .card .in{position:absolute;inset:0}
-.card .face{position:absolute;inset:0;border-radius:6px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 2px #fff}
+.card .face{position:absolute;inset:0;background-color:var(--paper);background-image:var(--grain);border:4px solid var(--pink);border-radius:5px;box-shadow:0 10px 18px rgba(0,0,0,.6);overflow:hidden}
 .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none}
-.card .gloss{position:absolute;inset:0;border-radius:6px;background:linear-gradient(180deg,rgba(255,255,255,.42) 0%,rgba(255,255,255,.08) 42%,transparent 43%);pointer-events:none}
-.card .badge{position:absolute;left:-14px;top:-16px;padding:5px 11px 3px;border-radius:999px;font:900 italic 21px/1 var(--hud);color:#fff;background:linear-gradient(180deg,#ff8cc8 0%,#ff2e93 48%,#d80f73 52%,#ff4aa5 100%);box-shadow:0 0 0 2px #fff,0 0 14px rgba(255,46,147,.9);opacity:0;transform:scale(.6) rotate(calc(var(--r) * -1));transition:opacity .15s,transform .2s cubic-bezier(.25,1.6,.4,1)}
-.card.on{--s:1.12;z-index:40;filter:drop-shadow(0 0 3px #fff) drop-shadow(0 0 22px var(--c))}
-.card.on .face{background:linear-gradient(172deg,#ffffff 0%,color-mix(in srgb,var(--c) 28%,#fff) 60%,color-mix(in srgb,var(--c) 70%,#fff) 100%)}
+.card img.col{opacity:0}
+.card .badge{position:absolute;left:-16px;top:-18px;padding:6px 12px 4px;border-radius:999px;font:400 21px/1 var(--font);letter-spacing:2px;color:#fff;background:var(--hot);box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--lime);opacity:0;transform:scale(.6) rotate(calc(var(--r) * -1));transition:opacity .15s,transform .2s cubic-bezier(.25,1.6,.4,1)}
+.card.on{--s:1.12;z-index:40}
+.card.on .face{border-color:var(--hot);box-shadow:0 0 0 4px var(--lime),0 0 30px rgba(196,227,28,.7),0 12px 20px rgba(0,0,0,.6)}
+.card.on img.col{opacity:1}
+.card.on img.blk{opacity:0}
 .card.on .badge{opacity:1;transform:scale(1) rotate(calc(var(--r) * -1))}
+.card.blank{pointer-events:none;cursor:default}
 #stage.roulette .card,#stage.roulette .card .badge{transition-duration:.05s}
-#stage.locked .card:not(.on){opacity:.35;filter:grayscale(1) brightness(.7)}
+#stage.locked .card:not(.on){opacity:.45}
+
+/* ---------- the big card (the picked fighter) ---------- */
+#heroCard{z-index:15;pointer-events:none;background-color:var(--paper);background-image:var(--grain);border:9px solid var(--pink);border-radius:7px;
+  box-shadow:0 26px 50px rgba(0,0,0,.75),0 0 0 3px rgba(10,10,9,.6);transform:rotate(var(--hr))}
+#heroCard .q{position:absolute;left:0;right:0;top:40px;text-align:center;font:400 460px/1 var(--font);color:transparent;-webkit-text-stroke:4px rgba(232,64,143,.45);display:none}
+#stage.rand #heroCard .q{display:block;animation:flick .16s steps(2,end) infinite}
+#cap{position:absolute;left:34px;right:30px;bottom:24px}
+#cap-no{font:400 26px/1 var(--font);letter-spacing:8px;color:var(--hot)}
+#cap-name{font:400 104px/1.02 var(--font);letter-spacing:-1px;color:var(--ink);white-space:nowrap}
 
 /* ---------- READY band ---------- */
-#band{left:0;top:1360px;width:1080px;height:200px;pointer-events:none;visibility:hidden;z-index:20}
-#band .bg{position:absolute;inset:0;transform:scaleY(0);transition:transform .2s cubic-bezier(.2,.9,.3,1);
-  background:linear-gradient(180deg,rgba(255,255,255,.45) 0%,rgba(255,255,255,.08) 48%,transparent 49%),linear-gradient(90deg,rgba(176,10,92,.85) 0,#ff2e93 55%,rgba(176,10,92,.92) 100%);
-  border-top:3px solid var(--chart);border-bottom:3px solid var(--chart);box-shadow:0 0 50px rgba(255,46,147,.55),0 0 24px rgba(215,255,60,.35)}
-#band .bg::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.22) 1.5px,transparent 2px);background-size:10px 10px}
-#band .txt{position:absolute;left:720px;top:24px;transform:translateX(-50%) skewX(-10deg);font:400 128px/1 var(--title);letter-spacing:12px;white-space:nowrap;display:flex}
-#band .txt span{display:inline-block;background:linear-gradient(180deg,#ffffff 0%,#ffffff 40%,#f4ffc4 52%,#d7ff3c 60%,#ffffff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 1px #6b0034) drop-shadow(4px 5px 0 #7d003d) drop-shadow(0 0 18px rgba(215,255,60,.6));opacity:0;transform:translateX(140px)}
-#band .sub{position:absolute;left:720px;bottom:14px;transform:translateX(-50%);font:800 26px/1 var(--hud);letter-spacing:9px;color:#fff;white-space:nowrap;opacity:0;text-shadow:0 2px 0 #7d003d}
-#band .shine{position:absolute;inset:0;background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%);background-size:300% 100%;background-position:120% 0;opacity:0}
+#band{left:0;top:1300px;width:1080px;height:180px;pointer-events:none;visibility:hidden;z-index:20}
+#band .bg{position:absolute;inset:0;transform:scaleY(0);transition:transform .2s cubic-bezier(.2,.9,.3,1);background:linear-gradient(90deg,rgba(232,64,143,.95),#ec73aa 50%,rgba(232,64,143,.95));border-top:5px solid var(--lime);border-bottom:5px solid var(--lime);box-shadow:0 0 40px rgba(232,64,143,.6)}
+#band .bg::after{content:"";position:absolute;inset:0;background-image:var(--grain);opacity:.6}
+#band .txt{position:absolute;left:540px;top:16px;transform:translateX(-50%);font:400 136px/1 var(--font);letter-spacing:26px;padding-left:26px;white-space:nowrap;display:flex;color:#fff;text-shadow:5px 6px 0 var(--ink)}
+#band .txt span{display:inline-block;opacity:0;transform:translateY(40px)}
+#band .sub{position:absolute;left:540px;bottom:12px;transform:translateX(-50%);font:400 25px/1 var(--font);letter-spacing:9px;color:#fff;white-space:nowrap;opacity:0;text-shadow:2px 2px 0 var(--ink)}
 #stage.locked #band{visibility:visible}
 #stage.locked #band .bg{transform:scaleY(1)}
-#stage.locked #band .txt span{animation:letterIn .36s cubic-bezier(.2,.9,.3,1) forwards;animation-delay:calc(var(--i) * 45ms + 120ms)}
-#stage.locked #band .sub{animation:appear .3s .5s forwards}
-#stage.locked #band .shine{animation:shine .7s .55s ease-out forwards}
+#stage.locked #band .txt span{animation:letterIn .32s cubic-bezier(.2,.9,.3,1) forwards;animation-delay:calc(var(--i) * 45ms + 100ms)}
+#stage.locked #band .sub{animation:appear .3s .45s forwards}
 @keyframes letterIn{to{opacity:1;transform:none}}
-@keyframes appear{from{opacity:0}to{opacity:1}}
-@keyframes shine{0%{opacity:1;background-position:120% 0}100%{opacity:1;background-position:-20% 0}}
+@keyframes appear{to{opacity:1}}
 
-/* ---------- the fighter (bottom left, in front of the fan) ---------- */
-#hero,#heroBack{left:0;top:0;width:1080px;height:1920px;pointer-events:none}
-#hero{z-index:30}
-#titleBlock,#nameplate,#hints{z-index:40}
-#heroNum{position:absolute;left:40px;top:860px;font:400 260px/1 var(--title);color:transparent;-webkit-text-stroke:2px color-mix(in srgb,var(--c) 80%,#fff);opacity:.22;letter-spacing:-4px}
-#spot{left:90px;top:1800px;width:480px;height:90px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 70%,#fff) 0%,color-mix(in srgb,var(--c) 40%,transparent) 45%,transparent 100%);opacity:.75;filter:blur(2px)}
-#fig{left:0;top:0;width:1080px;height:1920px;transform-origin:330px 1850px;filter:drop-shadow(0 0 2px rgba(255,255,255,.95)) drop-shadow(0 0 18px var(--c))}
+/* ---------- the fighter ---------- */
+#hero{left:0;top:0;width:1080px;height:1920px;pointer-events:none;z-index:30}
+#fig{left:0;top:0;width:1080px;height:1920px;transform-origin:var(--fx) var(--fy);filter:drop-shadow(0 0 2.2px rgba(255,255,255,.95))}
 #fig .fm{position:absolute;display:block;opacity:0;object-fit:fill;pointer-events:none}
-#randImg{position:absolute;opacity:0;filter:grayscale(1) brightness(.45) contrast(1.4)}
-#hero .q{position:absolute;left:20px;top:1000px;width:640px;text-align:center;font:400 560px/1 var(--title);color:transparent;-webkit-text-stroke:3px rgba(255,122,193,.35);display:none}
-#hero.rand .q{display:block;animation:flick2 .16s steps(2,end) infinite}
-#hero.rand #randImg{opacity:1}
-@keyframes flick2{50%{opacity:.4;transform:translateX(6px)}}
+#randImg{position:absolute;opacity:0;filter:brightness(.25)}
+#stage.rand #randImg{opacity:1}
 
-/* ---------- title + HUD ---------- */
-#titleBlock{left:54px;top:54px;pointer-events:none}
-#titleBlock h1{margin:0;font:400 120px/.9 var(--title);letter-spacing:4px;background:linear-gradient(180deg,#ffffff 0%,#ffffff 42%,#f0ffd0 50%,#d7ff3c 62%,#8bf26f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 1px #03170f) drop-shadow(4px 5px 0 #052a1f) drop-shadow(0 0 22px rgba(255,46,147,.65))}
-#titleBlock .pills{display:flex;gap:14px;margin-top:22px}
-.pill{display:inline-block;border-radius:999px;padding:11px 20px 9px;font:900 italic 25px/1 var(--hud);letter-spacing:4px;box-shadow:0 0 0 2px #fff,0 0 16px rgba(255,46,147,.6)}
-.pill.lime{color:#062a1f;background:linear-gradient(180deg,#ffffff 0%,#f6ffe0 48%,#cff7a8 52%,#8bf26f 100%)}
-.pill.pink{color:#fff;background:linear-gradient(180deg,#ff8cc8 0%,#ff2e93 48%,#d80f73 52%,#ff4aa5 100%)}
-#nameplate{left:54px;bottom:64px;display:flex;flex-direction:column;gap:6px;pointer-events:none;isolation:isolate}
-#nameplate::before{content:"";position:absolute;z-index:-1;left:-54px;right:-240px;top:-34px;bottom:-40px;background:linear-gradient(90deg,rgba(3,23,15,.86),rgba(3,23,15,.5) 60%,transparent)}
-#np-epi{display:flex;gap:16px;align-items:baseline;font:800 28px/1 var(--hud);letter-spacing:8px;text-transform:uppercase;color:color-mix(in srgb,var(--c) 85%,#fff);text-shadow:0 0 12px color-mix(in srgb,var(--c) 75%,transparent),0 2px 0 #03170f}
-#np-epi i{font-style:normal;color:#fff;opacity:.8}
-#np-name{font:900 italic 118px/1.02 var(--hud);white-space:nowrap;padding:0 44px 6px 4px;margin-right:-44px;letter-spacing:2px;transform:skewX(-6deg);transform-origin:0 100%;
-  background:linear-gradient(180deg,#ffffff 0%,#ffffff 38%,color-mix(in srgb,var(--c) 30%,#fff) 50%,color-mix(in srgb,var(--c) 85%,#fff) 74%,#ffffff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
-  filter:drop-shadow(0 0 1px #03170f) drop-shadow(3px 4px 0 #03170f) drop-shadow(0 0 20px color-mix(in srgb,var(--c) 75%,transparent))}
-#np-rule{height:5px;width:640px;border-radius:3px;background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 40%,#fff) 40%,transparent);box-shadow:0 0 12px var(--c)}
-#hints{right:40px;bottom:26px;display:flex;gap:18px;font:700 18px/1 var(--hud);letter-spacing:2px;color:#cdf7b4;transition:opacity .3s}
-#hints kbd{display:inline-block;font:800 15px/1 var(--hud);padding:5px 8px 3px;margin-right:6px;color:#062a1f;border-radius:6px;background:linear-gradient(180deg,#ffffff 0%,#f3ffd6 45%,#b9f58e 55%,#8bf26f 100%)}
+/* ---------- title + hints ---------- */
+#title{left:0;top:0;width:1080px;height:520px;pointer-events:none;z-index:40;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+#t-alter{position:absolute;left:44px;top:192px;font:400 174px/1 var(--font);letter-spacing:-3px}
+#t-egos{position:absolute;left:434px;top:56px;font:400 206px/1 var(--font);letter-spacing:-3px}
+#t-info{position:absolute;left:58px;top:396px;font:400 31px/1.28 var(--font);letter-spacing:.5px;text-transform:uppercase}
+#hints{left:34px;bottom:22px;z-index:40;display:flex;gap:16px;font:400 17px/1 var(--font);letter-spacing:2px;color:#fff;transition:opacity .3s}
+#hints kbd{font:400 15px/1 var(--font);padding:4px 7px 3px;margin-right:5px;color:var(--ink);background:var(--lime);border-radius:4px}
 #stage.nohints #hints{opacity:0}
-#flash{z-index:50;left:0;top:0;width:1080px;height:1920px;background:radial-gradient(circle at 35% 70%,#fff 0%,#ffd2e8 45%,#ff7ac1 100%);opacity:0;pointer-events:none}
+#flash{z-index:50;left:0;top:0;width:1080px;height:1920px;background:radial-gradient(circle at 60% 65%,#fff 0%,#ffd2e8 45%,#ec73aa 100%);opacity:0;pointer-events:none}
 
 /* ---------- intro (R replays) ---------- */
 @keyframes fadeIn{from{opacity:0}}
-@keyframes hubIn{from{opacity:0;transform:rotate(-30deg) scale(.85)}}
-@keyframes cardIn{from{opacity:0;transform:scale(.3) rotate(-40deg)}}
-@keyframes dropIn{from{opacity:0;transform:translateY(-60px)}}
-@keyframes heroIn{from{opacity:0;transform:translateX(-140px)}}
-@keyframes wipeIn{from{clip-path:inset(-80px calc(100% + 80px) -80px -80px)}to{clip-path:inset(-80px -260px -80px -80px)}}
+@keyframes popIn{from{opacity:0;transform:scale(.3) rotate(-30deg)}}
+@keyframes speakerIn{from{opacity:0;transform:translate(-50%,-50%) scale(.4)}}
+@keyframes titleIn{from{opacity:0;transform:translateY(-40px)}}
+@keyframes cardUp{from{opacity:0;transform:translateY(240px) rotate(var(--hr))}to{transform:rotate(var(--hr))}}
+@keyframes heroIn{from{opacity:0;transform:translateY(80px)}}
 #stage.intro #bgCanvas{animation:fadeIn .5s both}
-#stage.intro #hub{animation:hubIn 1s cubic-bezier(.2,.85,.25,1) both;transform-origin:var(--hx) var(--hy)}
-#stage.intro .card .in{animation:cardIn .42s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--k) * 45ms + .45s)}
-#stage.intro #titleBlock{animation:dropIn .6s .2s cubic-bezier(.2,.9,.3,1) both}
-#stage.intro #hero,#stage.intro #heroBack{animation:heroIn .7s .8s cubic-bezier(.2,.9,.3,1) both}
-#stage.intro #nameplate{animation:wipeIn .5s 1.1s both}
+#stage.intro #speaker{animation:speakerIn .6s .2s cubic-bezier(.2,1.4,.4,1) both}
+#stage.intro .card .in{animation:popIn .4s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--k) * 40ms + .45s)}
+#stage.intro #title{animation:titleIn .6s .1s cubic-bezier(.2,.9,.3,1) both}
+#stage.intro #heroCard{animation:cardUp .6s .8s cubic-bezier(.2,.9,.3,1) both}
+#stage.intro #hero{animation:heroIn .6s 1s cubic-bezier(.2,.9,.3,1) both}
 @media (prefers-reduced-motion: reduce){
-  .r-text,.spark{animation:none!important}
+  #speaker{animation:none!important}
   #stage.intro *{animation-duration:.01s!important;animation-delay:0s!important}
 }
 </style>
@@ -159,37 +123,24 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 <div id="stage" class="intro">
 <div id="shaker">
   <canvas id="bgCanvas" class="layer" width="1620" height="2880"></canvas>
-  <div id="glowRing" class="layer"></div>
-  <div id="glowHero" class="layer"></div>
-  <div id="sparks" class="layer" style="inset:0;pointer-events:none"></div>
-
-  <div id="heroBack" class="layer"><div id="heroNum">01</div><div id="spot" class="layer"></div></div>
 
   <div id="hub" class="layer">
-    <div class="r-lines"></div>
-    <div class="r-band"><i class="col"></i><i class="gloss"></i></div>
-    <div class="r-text"><svg viewBox="-250 -250 500 500"><defs><path id="txtRing" d="M -238 0 A 238 238 0 1 1 238 0 A 238 238 0 1 1 -238 0"/></defs><text><textPath id="txtRingPath" href="#txtRing" lengthAdjust="spacing"></textPath></text></svg></div>
-    <div class="r-inner"><i class="col"></i><i class="hl"></i></div>
-    <div class="r-core"><div class="rnd"><span class="q">?</span><span class="lbl" id="randLabel"></span></div></div>
-    <div class="hubhit"></div>
+    <div id="hubGlow"></div>
+    <canvas id="speaker" width="600" height="600"></canvas>
+    <div id="hubQ">?</div>
+    <div id="hubLabel"></div>
+    <div id="hubHit"></div>
   </div>
 
-  <svg id="vines" class="layer" viewBox="0 0 1080 1920" aria-hidden="true"></svg>
   <div id="cards" class="layer"></div>
 
-  <div id="band" class="layer"><div class="bg"></div><div class="shine"></div><div class="txt"></div><div class="sub"></div></div>
+  <div id="heroCard" class="layer"><div class="q">?</div><div id="cap"><div id="cap-no"></div><div id="cap-name"></div></div></div>
 
-  <div id="hero" class="layer">
-    <div id="fig" class="layer"><img id="randImg" alt=""></div>
-    <div class="q">?</div>
-  </div>
+  <div id="band" class="layer"><div class="bg"></div><div class="txt"></div><div class="sub"></div></div>
 
-  <div id="titleBlock" class="layer"><h1 id="gameTitle"></h1><div class="pills"><span class="pill lime" id="selLabel"></span><span class="pill pink" id="ptag"></span></div></div>
-  <div id="nameplate" class="layer">
-    <div id="np-epi"><i id="np-no"></i><span id="np-epithet"></span></div>
-    <div id="np-name"></div>
-    <div id="np-rule"></div>
-  </div>
+  <div id="hero" class="layer"><div id="fig" class="layer"><img id="randImg" alt=""></div></div>
+
+  <div id="title" class="layer"><div id="t-alter"></div><div id="t-egos"></div><div id="t-info"></div></div>
   <div id="hints" class="layer"><span><kbd>&larr;&rarr;&uarr;&darr;</kbd>MOVE</span><span><kbd>ENTER</kbd>SELECT</span><span><kbd>ESC</kbd>BACK</span></div>
   <div id="flash" class="layer"></div>
 </div>
@@ -199,26 +150,24 @@ html,body{height:100%;margin:0;background:#000;overflow:hidden}
 <script src="media/roster.js"></script>
 <script>
 /* =====================================================================
-   EDIT HERE. The fighters (order, videos, sizes, colours) come from media/roster.js.
+   EDIT HERE. The fighters (order, videos, sizes) come from media/roster.js.
    ===================================================================== */
 const CONFIG = {
-  gameTitle:   'ALTER<br>EGO',
-  selectLabel: 'CHARACTER SELECT',
-  playerLabel: 'PLAYER 1',
-  readyText:   'READY',
-  randomName:  'RANDOM',
-  randomTag:   'Fate decides',
-  epithet:     'Alter Ego',
-  startWith:   0,
-  showHints:   false,           // H shows them (off: this version is for recording vertical video)
-  floorX: 330, floorY: 1852,    // the fighter's feet, stage px
-  figScale: 1.18,               // the fighter is drawn this much bigger than in the landscape version
-  lyingX: 500, lyingLift: 330,  // a lying fighter (Nujum): centre x and how far above the floor
-  ring: { x: 960, y: 800 },     // the ring's centre (it runs off the right edge, like the poster)
-  inner: { r: 462, w: 176, h: 232, tilt: 30 },   // dark green cards, just outside the pale band
-  outer: { r: 724, w: 150, h: 198, tilt: 40 },   // bright green cards, outside the ring lines
-  arc: [256, 106],              // the fan runs from this angle to that one (degrees, 180 = left)
-  hoverDelay: 60,               // ms the pointer rests on a card before it's picked (sweeping across doesn't flicker)
+  title:      ['Alter', 'Egos'],
+  info:       ['The&nbsp; Garage @ NYU, 370 Jay St', 'Dec 12'],
+  randomName: 'RANDOM',
+  readyText:  'READY',
+  showHints:  false,               // H shows them (off: this version is for recording vertical video)
+  hub: { x: 640, y: 1038, ring: 207 },                 // the speaker (RANDOM) and its pink ring
+  outer: { r: 470, w: 170, h: 220, from: 330, to: 150, n: 11, tilt: 30 },   // card rows round the speaker:
+  inner: { r: 330, w: 150, h: 194, from: 315, to: 185, n: 7, tilt: 24 },    // angles in degrees, 270 = top, 180 = left
+  blanks: [0, 14, 17],             // which places (in order round the spiral) are blank cards, like the poster
+  heroCard: { x: 690, y: 1572, w: 590, h: 680, tilt: -3 },
+  floorX: 690, floorY: 1765,       // the picked fighter's feet
+  figScale: .78,                   // fighter size (1 = the landscape version's)
+  lyingX: 690, lyingLift: 150,     // a lying fighter (Nujum)
+  hoverDelay: 60,
+  startWith: 0,
   fighters: {},
 };
 /* ===================================================================== */
@@ -234,113 +183,165 @@ if (!MEDIA || !MEDIA.fighters || !MEDIA.fighters.length) {
 const STORE = MEDIA.store;
 const ROSTER = MEDIA.fighters.map(f => Object.assign({}, f, CONFIG.fighters[f.name] || {}));
 const N = ROSTER.length, RANDOM = 99;
-const stage = $('#stage'), shaker = $('#shaker'), hero = $('#hero'), fig = $('#fig'), randImg = $('#randImg');
+const stage = $('#stage'), shaker = $('#shaker'), fig = $('#fig'), randImg = $('#randImg');
 const attr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 const UA = navigator.userAgent;
 const SAFARI = /Safari\//.test(UA) && !/Chrome\/|Chromium\/|CriOS|FxiOS|Edg\//.test(UA);
 const EXT = SAFARI ? 'mov' : 'webm';
+const H = CONFIG.hub;
 
-/* ---------------- static text ---------------- */
-$('#gameTitle').innerHTML = CONFIG.gameTitle;
-$('#selLabel').textContent = CONFIG.selectLabel;
-$('#ptag').textContent = CONFIG.playerLabel;
-$('#randLabel').textContent = CONFIG.randomName;
-$('#band .txt').innerHTML = [...CONFIG.readyText].map((ch, i) => `<span style="--i:${i}">${ch === ' ' ? '&nbsp;' : attr(ch)}</span>`).join('');
-$('#txtRingPath').textContent = `${CONFIG.randomName} SELECT ✦ `.repeat(4);
-$('#txtRingPath').setAttribute('textLength', String(Math.round(2 * Math.PI * 238 - 6)));
+/* seeded random, so the collage is the same every time */
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+/* paper grain (cards, band, background) */
+const grain = (() => { const S = 160, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d'), d = g.createImageData(S, S), R = rng(7);
+  for (let i = 0; i < d.data.length; i += 4) { const v = R() * 255 | 0; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = R() < .55 ? 34 : 0; }
+  g.putImageData(d, 0, 0); return c; })();
+stage.style.setProperty('--grain', `url(${grain.toDataURL()})`);
+
+/* ---------------- text ---------------- */
+$('#t-alter').textContent = CONFIG.title[0];
+$('#t-egos').textContent = CONFIG.title[1];
+$('#t-info').innerHTML = CONFIG.info.join('<br>');
+$('#hubLabel').textContent = CONFIG.randomName;
+$('#band .txt').innerHTML = [...CONFIG.readyText].map((ch, i) => `<span style="--i:${i}">${attr(ch)}</span>`).join('');
 if (!CONFIG.showHints) stage.classList.add('nohints');
+$('#hub').style.setProperty('--hx', H.x + 'px'); $('#hub').style.setProperty('--hy', H.y + 'px');
+const HC = CONFIG.heroCard, hc = $('#heroCard');
+Object.assign(hc.style, { left: (HC.x - HC.w / 2) + 'px', top: (HC.y - HC.h / 2) + 'px', width: HC.w + 'px', height: HC.h + 'px' });
+hc.style.setProperty('--hr', HC.tilt + 'deg');
+fig.style.setProperty('--fx', CONFIG.floorX + 'px'); fig.style.setProperty('--fy', CONFIG.floorY + 'px');
 
-/* ---------------- background canvas ---------------- */
-function drawBackground(crowd) {
-  const cv = $('#bgCanvas'), K = cv.width / 1080, g = cv.getContext('2d');
+/* ---------------- the collage (drawn once) ---------------- */
+function drawBackground() {
+  const cv = $('#bgCanvas'), K = cv.width / 1080, g = cv.getContext('2d'), R = rng(2027);
+  const rnd = (a, b) => a + (b - a) * R();
   g.setTransform(K, 0, 0, K, 0, 0);
-  const base = g.createLinearGradient(0, 0, 0, 1920);
-  base.addColorStop(0, '#0b4433'); base.addColorStop(.55, '#093c2d'); base.addColorStop(1, '#052b1f');
-  g.fillStyle = base; g.fillRect(0, 0, 1080, 1920);
-  // fine halftone over everything, like the poster's texture
-  g.fillStyle = 'rgba(20,90,62,.75)';
-  for (let y = 5; y < 1920; y += 10) for (let x = 5 + ((y / 10) % 2) * 5; x < 1080; x += 10) {
-    const r = 1.2 + 1.1 * Math.max(0, 1 - Math.hypot(x - 120, y - 1500) / 900);
-    g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
-  }
-  // grey swirls and circles, bottom right
-  g.lineCap = 'round';
-  const spiral = (cx, cy, r0, r1, turns, a0, w, col) => {
-    g.strokeStyle = col; g.lineWidth = w; g.beginPath();
-    for (let t = 0; t <= 1.0001; t += .004) { const a = a0 + t * turns * 2 * Math.PI, r = r0 + (r1 - r0) * t; const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a); t ? g.lineTo(x, y) : g.moveTo(x, y); }
-    g.stroke();
+  g.fillStyle = '#0a0a09'; g.fillRect(0, 0, 1080, 1920);
+  const C = { lime: '#accb16', lime2: '#c4e31c', olive: '#4c5c15', olive2: '#748617', pink: '#ec73aa', hot: '#e8408f', pinkd: '#b8527a', grey: '#35302f', grey2: '#5e564a', dark: '#1b1918' };
+  const blob = (x, y, r, col, n = 14, rough = .35) => { g.fillStyle = col; g.beginPath();
+    for (let i = 0; i <= n; i++) { const a = i / n * Math.PI * 2, rr = r * (1 + rough * (R() - .5)); i ? g.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)) : g.moveTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
+    g.closePath(); g.fill(); };
+  const dot = (x, y, r, col) => { g.fillStyle = col; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); };
+  const splat = (x, y, r, col, drops = 26, reach = 2.2) => {
+    blob(x, y, r, col, 18, .5);
+    for (let i = 0; i < drops; i++) { const a = rnd(0, Math.PI * 2), d = r * rnd(.9, reach), w = rnd(2, r * .22);
+      g.strokeStyle = col; g.lineCap = 'round'; g.lineWidth = w; g.beginPath(); g.moveTo(x + r * .6 * Math.cos(a), y + r * .6 * Math.sin(a)); g.lineTo(x + d * Math.cos(a), y + d * Math.sin(a)); g.stroke();
+      dot(x + (d + rnd(6, 30)) * Math.cos(a), y + (d + rnd(6, 30)) * Math.sin(a), rnd(2, w * .8 + 2), col); }
   };
-  for (let r = 40; r <= 290; r += 36) { g.strokeStyle = `rgba(140,150,135,${.42 - r / 1100})`; g.lineWidth = 5; g.beginPath(); g.arc(900, 1640, r, Math.PI * .75, Math.PI * 2.1); g.stroke(); }
-  spiral(1010, 1520, 8, 120, 2.4, 0, 6, 'rgba(140,150,135,.45)');
-  spiral(700, 1830, 6, 90, 2.2, 2, 5, 'rgba(140,150,135,.4)');
-  spiral(980, 1820, 6, 70, 2, 1, 4, 'rgba(140,150,135,.35)');
-  // the halftone crowd, upper left (bright dots, like the poster)
-  if (crowd) {
-    const W = 1080, H = 700;
-    const c2 = document.createElement('canvas'); c2.width = W * K; c2.height = H * K;
-    const h = c2.getContext('2d'); h.setTransform(K, 0, 0, K, 0, 0);
-    h.fillStyle = 'rgba(52,196,122,1)';
-    for (let y = 4; y < H; y += 9) for (let x = 4 + ((y / 9) % 2) * 4.5; x < W; x += 9) { h.beginPath(); h.arc(x, y, 2.6, 0, 7); h.fill(); }
-    const mask = document.createElement('canvas'); mask.width = c2.width; mask.height = c2.height;
-    const mg = mask.getContext('2d'); mg.setTransform(K, 0, 0, K, 0, 0);
-    const ch = 560, cw = crowd.width * ch / crowd.height;
-    for (let x = -120; x < W; x += cw - 80) mg.drawImage(crowd, x, H - ch, cw, ch);
-    const fade = mg.createLinearGradient(0, 0, W, 0); fade.addColorStop(0, 'rgba(0,0,0,1)'); fade.addColorStop(.62, 'rgba(0,0,0,.9)'); fade.addColorStop(.85, 'rgba(0,0,0,0)');
-    mg.globalCompositeOperation = 'destination-in'; mg.fillStyle = fade; mg.fillRect(0, 0, W, H);
-    h.setTransform(1, 0, 0, 1, 0, 0); h.globalCompositeOperation = 'destination-in'; h.drawImage(mask, 0, 0);
-    g.globalAlpha = .8; g.drawImage(c2, 0, 0, c2.width, c2.height, 0, 330, W, H); g.globalAlpha = 1;
+  const ring = (x, y, r, w, col, a0 = 0, a1 = Math.PI * 2) => { g.strokeStyle = col; g.lineWidth = w; g.lineCap = 'butt'; g.beginPath(); g.arc(x, y, r, a0, a1); g.stroke(); };
+  const swirl = (x, y, r, turns, w, col, a0 = 0, dir = 1) => {   // tapered spiral curl
+    g.strokeStyle = col; g.lineCap = 'round'; const steps = 90; let px, py;
+    for (let i = 0; i <= steps; i++) { const t = i / steps, a = a0 + dir * t * turns * Math.PI * 2, rr = r * (1 - t * .92);
+      const nx = x + rr * Math.cos(a), ny = y + rr * Math.sin(a);
+      if (i) { g.lineWidth = Math.max(1, w * (1 - t * .85)); g.beginPath(); g.moveTo(px, py); g.lineTo(nx, ny); g.stroke(); } px = nx; py = ny; }
+  };
+  const flower = (x, y, r, col, petals = 6, rot = 0) => { g.fillStyle = col;
+    for (let i = 0; i < petals; i++) { const a = rot + i / petals * Math.PI * 2; g.save(); g.translate(x + r * .55 * Math.cos(a), y + r * .55 * Math.sin(a)); g.rotate(a); g.beginPath(); g.ellipse(0, 0, r * .55, r * .26, 0, 0, 7); g.fill(); g.restore(); }
+    dot(x, y, r * .22, '#0a0a09'); };
+  const leaf = (x, y, len, ang, col) => { g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = col; g.beginPath(); g.moveTo(0, 0); g.quadraticCurveTo(len * .5, -len * .32, len, 0); g.quadraticCurveTo(len * .5, len * .32, 0, 0); g.fill(); g.restore(); };
+  const rrect = (x, y, w, h, rad, ang, col) => { g.save(); g.translate(x, y); g.rotate(ang); g.fillStyle = col; g.beginPath(); g.roundRect(-w / 2, -h / 2, w, h, rad); g.fill(); g.restore(); };
+
+  // dark grunge underneath
+  for (let i = 0; i < 16; i++) splat(rnd(0, 1080), rnd(0, 1920), rnd(30, 90), i % 3 ? C.dark : '#24211f', 14, 2.6);
+  // olive rings, circles and bars (top left behind "Alter", left side)
+  ring(250, 330, 150, 28, C.olive); ring(250, 330, 104, 10, 'rgba(116,134,23,.6)');
+  dot(118, 150, 52, C.olive); dot(118, 150, 26, '#0a0a09');
+  ring(70, 1330, 120, 22, C.olive, 0, Math.PI * 2); dot(170, 1490, 40, 'rgba(116,134,23,.8)');
+  for (let i = 0; i < 9; i++) { g.fillStyle = i % 2 ? C.olive : C.olive2; g.fillRect(rnd(790, 1060), rnd(0, 120), rnd(6, 20), rnd(180, 520)); }
+  // grey rings top right and left
+  ring(930, 250, 92, 24, C.grey); ring(1040, 420, 64, 16, C.grey2); ring(870, 470, 40, 10, C.grey);
+  dot(990, 130, 34, C.grey); ring(110, 760, 70, 14, C.grey);
+  // translucent pink slabs behind the speaker
+  rrect(430, 1080, 250, 440, 30, .3, 'rgba(236,115,170,.42)');
+  rrect(905, 880, 200, 300, 26, -.25, 'rgba(184,82,122,.5)');
+  rrect(980, 1330, 180, 260, 24, .2, 'rgba(236,115,170,.32)');
+  // lime and olive rays rising from the speaker to the top
+  for (let i = 0; i < 34; i++) {
+    const a = rnd(252, 312) * D2R, r0 = rnd(150, 260), r1 = rnd(700, 1200), w = rnd(4, 30);
+    g.strokeStyle = i % 4 === 0 ? C.olive2 : i % 3 === 0 ? C.olive : (i % 2 ? C.lime : C.lime2); g.globalAlpha = rnd(.75, 1); g.lineWidth = w; g.lineCap = 'butt';
+    g.beginPath(); g.moveTo(H.x + r0 * Math.cos(a), H.y + r0 * Math.sin(a)); g.lineTo(H.x + r1 * Math.cos(a), H.y + r1 * Math.sin(a)); g.stroke();
+    if (R() < .4) { g.lineCap = 'round'; g.lineWidth = w * .6; const rr = r1 + rnd(20, 60); g.beginPath(); g.moveTo(H.x + (r1 + 8) * Math.cos(a), H.y + (r1 + 8) * Math.sin(a)); g.lineTo(H.x + rr * Math.cos(a), H.y + rr * Math.sin(a)); g.stroke(); }
   }
-  const v = g.createRadialGradient(560, 900, 500, 560, 900, 1250);
-  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(1,12,8,.7)');
-  g.fillStyle = v; g.fillRect(0, 0, 1080, 1920);
+  g.globalAlpha = 1;
+  // the lime oval halftone, in arcs round the speaker on the left
+  g.fillStyle = C.lime;
+  for (let r = 300; r <= 640; r += 38) {
+    const step = (24 + r * .045) / r;
+    for (let a = 128 * D2R; a <= 232 * D2R; a += step) {
+      const x = H.x + r * Math.cos(a), y = H.y + r * Math.sin(a);
+      if (x < -20 || y > 1260) continue;
+      const rx = 8 + r * .018, ry = rx * .62;
+      g.save(); g.translate(x, y); g.rotate(a + Math.PI / 2); g.beginPath(); g.ellipse(0, 0, rx, ry, 0, 0, 7); g.fill(); g.restore();
+    }
+  }
+  // pink swirls, arcs and flowers
+  ring(H.x, H.y, 560, 12, 'rgba(232,64,143,.75)', 2.2, 3.9);
+  ring(H.x, H.y, 610, 5, 'rgba(236,115,170,.6)', 2.5, 4.4);
+  swirl(330, 560, 70, 2.2, 14, C.pink, 0, 1); swirl(205, 255, 46, 1.8, 10, C.hot, 2, -1);
+  swirl(890, 1150, 80, 2.1, 15, C.pink, 1, -1); swirl(360, 1270, 64, 2, 12, C.hot, 3, 1);
+  swirl(930, 700, 50, 1.9, 10, C.pinkd, 0, 1); swirl(560, 760, 38, 1.8, 8, C.pink, 4, -1);
+  g.strokeStyle = C.pink; g.lineWidth = 9; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(60, 520); g.bezierCurveTo(160, 380, 360, 420, 420, 300); g.stroke();
+  g.beginPath(); g.moveTo(760, 1290); g.bezierCurveTo(840, 1240, 960, 1260, 1040, 1180); g.stroke();
+  flower(470, 900, 30, C.pink, 6, .3); flower(520, 830, 22, C.pink, 6, 1); flower(805, 845, 26, C.pinkd, 6, .5); flower(880, 1270, 22, C.pink, 5, .2);
+  for (const [x, y, l, a] of [[455, 960, 46, -.6], [500, 880, 38, -1.4], [830, 900, 40, .7], [760, 330, 44, -2.2], [700, 380, 34, -.8], [1010, 600, 40, 2.4]]) leaf(x, y, l, a, R() < .5 ? C.lime : C.olive2);
+  // pink paint marks round the title
+  splat(380, 200, 22, C.pink, 10, 2); splat(700, 40, 18, C.pink, 8, 2.4);
+  // the hot pink ring round the speaker, then the lime splash it sits in
+  ring(H.x, H.y, H.ring, 34, C.hot); ring(H.x, H.y, H.ring - 28, 3, 'rgba(236,115,170,.7)');
+  splat(H.x, H.y, 150, C.lime, 46, 2.05);
+  for (let i = 0; i < 14; i++) { const a = rnd(0, Math.PI * 2), d = rnd(160, 300); dot(H.x + d * Math.cos(a), H.y + d * Math.sin(a), rnd(4, 14), '#0a0a09'); }
+  splat(H.x - 150, H.y + 160, 18, C.lime2, 10, 3); splat(H.x + 210, H.y - 120, 16, C.lime2, 10, 3);
+  // grain over everything
+  g.globalAlpha = .9; g.fillStyle = g.createPattern(grain, 'repeat'); g.fillRect(0, 0, 1080, 1920); g.globalAlpha = 1;
 }
-const crowdImg = new Image();
-crowdImg.onload = () => drawBackground(crowdImg);
-crowdImg.onerror = () => drawBackground(null);
-drawBackground(null);
-crowdImg.src = 'media/crowd.png';
+drawBackground();
 
-const STAR = 'M17 0 C18.4 11 23 15.6 34 17 C23 18.4 18.4 23 17 34 C15.6 23 11 18.4 0 17 C11 15.6 15.6 11 17 0 Z';
-$('#sparks').innerHTML = [[700, 80, '#d7ff3c', 2.8, 0], [1020, 1260, '#ff7ac1', 3.4, .6], [180, 860, '#d7ff3c', 3, 1.2], [620, 1560, '#ff7ac1', 2.6, .3],
-  [80, 420, '#ff7ac1', 3.2, 1.6], [520, 640, '#d7ff3c', 2.4, 2], [1000, 140, '#ffffff', 3.6, .9], [860, 1460, '#d7ff3c', 3.1, 1.1]]
-  .map(([x, y, c, t, d]) => `<svg class="spark" viewBox="0 0 34 34" style="left:${x}px;top:${y}px;--sc:${c};--t:${t}s;--d:${d}s"><path d="${STAR}"/></svg>`).join('');
+/* ---------------- the speaker ---------------- */
+(function drawSpeaker() {
+  const cv = $('#speaker'), g = cv.getContext('2d'), S = cv.width / 300, R = rng(12);
+  g.setTransform(S, 0, 0, S, 150 * S, 150 * S);
+  const rad = (r0, r1, stops) => { const gr = g.createRadialGradient(0, 0, r0, 0, 0, r1); stops.forEach(([o, c]) => gr.addColorStop(o, c)); return gr; };
+  g.fillStyle = '#0d0d0d'; g.beginPath(); g.arc(0, 0, 148, 0, 7); g.fill();                               // frame
+  const rim = g.createLinearGradient(-140, -140, 140, 140); rim.addColorStop(0, '#9a9a9a'); rim.addColorStop(.45, '#3a3a3a'); rim.addColorStop(1, '#1a1a1a');
+  g.strokeStyle = rim; g.lineWidth = 7; g.beginPath(); g.arc(0, 0, 143, 0, 7); g.stroke();
+  for (const a of [45, 135, 225, 315]) { const x = 132 * Math.cos(a * D2R), y = 132 * Math.sin(a * D2R); g.fillStyle = '#8c8c8c'; g.beginPath(); g.arc(x, y, 5.5, 0, 7); g.fill(); g.fillStyle = '#222'; g.fillRect(x - 3.5, y - .8, 7, 1.6); }
+  g.fillStyle = rad(100, 126, [[0, '#121212'], [.5, '#3a3a3a'], [1, '#0c0c0c']]); g.beginPath(); g.arc(0, 0, 126, 0, 7); g.fill();   // surround
+  g.fillStyle = rad(44, 104, [[0, '#d9d9d9'], [.35, '#9c9c9c'], [.8, '#565656'], [1, '#2c2c2c']]); g.beginPath(); g.arc(0, 0, 104, 0, 7); g.fill();   // cone
+  g.fillStyle = 'rgba(0,0,0,.55)';                                                                          // halftone print on the cone
+  for (let y = -104; y <= 104; y += 6) for (let x = -104; x <= 104; x += 6) { const d = Math.hypot(x, y); if (d > 102 || d < 46) continue; const r = .4 + 2.1 * ((d - 46) / 58); g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); }
+  g.strokeStyle = 'rgba(255,255,255,.12)'; g.lineWidth = 1.2; for (const r of [58, 72, 88]) { g.beginPath(); g.arc(0, 0, r, 0, 7); g.stroke(); }
+  const cap = g.createRadialGradient(-14, -16, 2, 0, 0, 46); cap.addColorStop(0, '#ffffff'); cap.addColorStop(.35, '#c8c8c8'); cap.addColorStop(.75, '#5a5a5a'); cap.addColorStop(1, '#151515');
+  g.fillStyle = cap; g.beginPath(); g.arc(0, 0, 46, 0, 7); g.fill();                                           // dust cap
+  g.fillStyle = 'rgba(255,255,255,.75)'; g.beginPath(); g.ellipse(-12, -24, 12, 6, -.5, 0, 7); g.fill();
+  for (let i = 0; i < 9; i++) { const a = R() * 7, d = 50 + R() * 50; g.fillStyle = '#0a0a09'; g.beginPath(); g.arc(d * Math.cos(a), d * Math.sin(a), 2 + R() * 6, 0, 7); g.fill(); }   // paint specks
+})();
 
-/* ---------------- cards: two rows around the left side of the ring ---------------- */
-const RC = CONFIG.ring, POS = new Map();
-$('#hub').style.setProperty('--hx', RC.x + 'px'); $('#hub').style.setProperty('--hy', RC.y + 'px');
-// RANDOM's "?" sits in the middle of the part of the core that's on screen (the ring runs off the right edge)
-{ const R = 161, visL = RC.x - R, visR = Math.min(1080, RC.x + R); $('.r-core').style.setProperty('--rx', ((visL + visR) / 2 - RC.x).toFixed(1) + 'px'); }
-$('#glowRing').style.left = (RC.x - 760) + 'px'; $('#glowRing').style.top = (RC.y - 760) + 'px';
-const [a0, a1] = CONFIG.arc;
+/* ---------------- the cards ---------------- */
+const slots = [];
+for (const [row, inner] of [[CONFIG.inner, true], [CONFIG.outer, false]])
+  for (let i = 0; i < row.n; i++) { const deg = row.from + (row.to - row.from) * i / (row.n - 1); slots.push({ deg, row, inner }); }
+const order = slots.slice().sort((a, b) => b.deg - a.deg);   // round the spiral from the top right
+order.forEach((s, i) => s.blank = CONFIG.blanks.includes(i));
+let fk = 0; order.forEach(s => { if (!s.blank && fk < N) s.k = fk++; });
+const POS = new Map();
 let html = '';
-ROSTER.forEach((f, k) => {
-  const row = k % 2 ? CONFIG.outer : CONFIG.inner;
-  const deg = a0 + (a1 - a0) * k / (N - 1), a = deg * D2R;
-  const x = RC.x + row.r * Math.cos(a), y = RC.y + row.r * Math.sin(a);
-  const r = -row.tilt * Math.sin(2 * a) + ((k * 37) % 11 - 5) * .9;
-  POS.set(k, [x - RC.x, y - RC.y]);
-  const outer = row === CONFIG.outer;
-  html += `<div class="card${outer ? ' outer' : ''}" data-k="${k}" style="--x:${x.toFixed(1)}px;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg;--w:${row.w}px;--h:${row.h}px;--g:${outer ? 'rgba(214,60,160,.85)' : 'rgba(215,255,60,.8)'};--k:${k}">
-    <div class="in"><div class="face"><img src="media/${attr(f.dir)}/${outer ? 'card_bright' : 'card'}.webp" alt="${attr(f.name)}" draggable="false"></div><div class="gloss"></div><div class="badge">1P</div></div></div>`;
+slots.forEach((s, i) => {      // inner row first, so the outer row lies on top
+  const a = s.deg * D2R, x = H.x + s.row.r * Math.cos(a), y = H.y + s.row.r * Math.sin(a);
+  const r = -s.row.tilt * Math.sin(2 * a) + ((i * 37) % 11 - 5) * .9;
+  const st = `--x:${x.toFixed(1)}px;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg;--w:${s.row.w}px;--h:${s.row.h}px;--k:${i}`;
+  if (s.k === undefined) { html += `<div class="card blank" style="${st}"><div class="in"><div class="face"></div></div></div>`; return; }
+  const f = ROSTER[s.k];
+  POS.set(s.k, [x - H.x, y - H.y]);
+  html += `<div class="card" data-k="${s.k}" style="${st}"><div class="in"><div class="face"><img class="blk" src="media/${attr(f.dir)}/card_black.webp" alt="${attr(f.name)}" draggable="false"><img class="col" src="media/${attr(f.dir)}/card_color.webp" alt="" draggable="false"></div><div class="badge">1P</div></div></div>`;
 });
 $('#cards').innerHTML = html;
 POS.set(RANDOM, [0, 0]);
-const cardEls = [...document.querySelectorAll('.card')];
-const badgeEls = cardEls.map(el => el.querySelector('.badge'));
-// bright cards fall back to the dark ones if the build hasn't made them
-cardEls.forEach(el => { const im = el.querySelector('img'); im.onerror = () => { im.onerror = null; im.src = im.src.replace('card_bright', 'card'); }; });
-
-// green vine flourishes around the top cards (the poster's floral swirls)
-(function vines() {
-  const curl = (x, y, s, flip) => {
-    const f = flip ? -1 : 1, p = (dx, dy) => `${(x + dx * s * f).toFixed(1)} ${(y + dy * s).toFixed(1)}`;
-    return `<path d="M${p(0, 0)} C${p(30, -30)} ${p(70, -10)} ${p(80, 20)} C${p(88, 46)} ${p(64, 62)} ${p(46, 52)} C${p(32, 44)} ${p(38, 26)} ${p(52, 30)}" fill="none" stroke="#8bf26f" stroke-width="${(4 * s).toFixed(1)}" stroke-linecap="round"/>
-      <path d="M${p(10, -6)} C${p(0, -40)} ${p(-30, -60)} ${p(-60, -56)}" fill="none" stroke="#8bf26f" stroke-width="${(3 * s).toFixed(1)}" stroke-linecap="round"/>
-      <ellipse cx="${(x - 40 * s * f).toFixed(1)}" cy="${(y - 58 * s).toFixed(1)}" rx="${(13 * s).toFixed(1)}" ry="${(6 * s).toFixed(1)}" transform="rotate(${flip ? 25 : -25} ${(x - 40 * s * f).toFixed(1)} ${(y - 58 * s).toFixed(1)})" fill="#8bf26f"/>
-      <circle cx="${(x + 52 * s * f).toFixed(1)}" cy="${(y + 30 * s).toFixed(1)}" r="${(5 * s).toFixed(1)}" fill="#d7ff3c"/>`;
-  };
-  $('#vines').innerHTML = curl(850, 300, 1.1, false) + curl(1040, 250, .9, true) + curl(905, 520, .7, false) + curl(640, 1060, .7, true);
-})();
+const cardEls = [], badgeEls = [];
+document.querySelectorAll('.card[data-k]').forEach(el => { const k = +el.dataset.k; cardEls[k] = el; badgeEls[k] = el.querySelector('.badge'); });
+// cards fall back to the plain card image if the black/colour ones aren't built yet
+document.querySelectorAll('.card img').forEach(im => { im.onerror = () => { im.onerror = null; im.src = im.src.replace(/card_(black|color)/, 'card'); }; });
 
 /* ---------------- fighter media ---------------- */
 function place(el, m) {
@@ -415,42 +416,30 @@ function backToIdle(k) {
 
 /* ---------------- state ---------------- */
 let cur = null, locked = false, busy = false, randTimer = null;
-function fitName() {
-  const el = $('#np-name');
-  el.style.fontSize = '118px';
-  const w = el.scrollWidth, max = 760;
-  if (w > max) el.style.fontSize = (118 * max / w).toFixed(1) + 'px';
-}
-function setPlate(no, epithet, name, anim) {
-  $('#np-no').textContent = no;
-  $('#np-epithet').textContent = epithet;
-  $('#np-name').textContent = name;
-  fitName();
-  if (anim) $('#nameplate').animate([{ clipPath: 'inset(-80px calc(100% + 80px) -80px -80px)' }, { clipPath: 'inset(-80px -260px -80px -80px)' }], { duration: anim === 'fast' ? 80 : 240, easing: 'ease-out' });
+function setCaption(no, name, anim) {
+  $('#cap-no').textContent = no;
+  const el = $('#cap-name'); el.textContent = name; el.style.fontSize = '104px';
+  const max = HC.w - 70; if (el.scrollWidth > max) el.style.fontSize = (104 * max / el.scrollWidth).toFixed(1) + 'px';
+  if (anim) $('#cap').animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: anim === 'fast' ? 80 : 220, easing: 'ease-out' });
 }
 function select(s, mode = 'normal') {
   if (s === cur) return;
   cur = s;
-  cardEls.forEach((el, k) => el.classList.toggle('on', k === s));
+  cardEls.forEach((el, k) => el && el.classList.toggle('on', k === s));
   const isRand = s === RANDOM;
   stage.classList.toggle('rand', isRand);
-  hero.classList.toggle('rand', isRand);
   clearInterval(randTimer);
   if (isRand) {
     hideFighter();
-    stage.style.setProperty('--c', '#ff2e93');
-    $('#heroNum').textContent = '??';
-    setPlate('No.??', CONFIG.randomTag, CONFIG.randomName, mode !== 'none' && mode);
+    setCaption('NO. ??', CONFIG.randomName, mode !== 'none' && mode);
     const tick = () => { const f = ROSTER[(Math.random() * N) | 0]; randImg.src = `media/${f.dir}/poster.webp`; place(randImg, f.idle); };
     tick(); randTimer = setInterval(tick, 85);
     return;
   }
   const f = ROSTER[s], no = String(f.no || s + 1).padStart(2, '0');
-  stage.style.setProperty('--c', f.colour);
-  $('#heroNum').textContent = no;
-  setPlate('No.' + no, f.epithet || CONFIG.epithet, f.name.toUpperCase(), mode !== 'none' && mode);
+  setCaption('NO. ' + no, f.name, mode !== 'none' && mode);
   showFighter(s, mode === 'fast');
-  if (mode !== 'none') fig.animate([{ opacity: 0, transform: 'translateX(-60px)' }, { opacity: 1, transform: 'none' }], { duration: mode === 'fast' ? 90 : 240, easing: 'cubic-bezier(.2,.85,.25,1)' });
+  if (mode !== 'none') fig.animate([{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'none' }], { duration: mode === 'fast' ? 90 : 220, easing: 'cubic-bezier(.2,.85,.25,1)' });
 }
 function nav(dx, dy) {
   if (locked || busy) return;
@@ -471,16 +460,15 @@ function lock(k) {
   $('#band .sub').textContent = `PLAYER 1 · ${ROSTER[k].name.toUpperCase()}`;
   badgeEls[k].textContent = 'OK';
   playSelected(k);
-  $('#flash').animate([{ opacity: .9 }, { opacity: 0 }], { duration: 480, easing: 'ease-out' });
+  $('#flash').animate([{ opacity: .85 }, { opacity: 0 }], { duration: 480, easing: 'ease-out' });
   shaker.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(-12px,7px)' }, { transform: 'translate(10px,-6px)' }, { transform: 'translate(-7px,4px)' }, { transform: 'translate(4px,-2px)' }, { transform: 'translate(0,0)' }], { duration: 340, easing: 'ease-out' });
   fig.animate([{ transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 380, easing: 'cubic-bezier(.2,.9,.3,1)' });
-  cardEls[k].animate([{ filter: 'brightness(2)' }, { filter: 'brightness(1)' }], { duration: 500 });
 }
 function cancel() {
   if (!locked) return;
   locked = false;
   stage.classList.remove('locked');
-  badgeEls.forEach(b => b.textContent = '1P');
+  badgeEls.forEach(b => b && (b.textContent = '1P'));
   if (cur !== RANDOM && cur !== null) backToIdle(cur);
 }
 function confirmSel() {
@@ -503,12 +491,13 @@ function roulette() {
 /* ---------------- input ---------------- */
 let hoverT = null;
 cardEls.forEach((el, k) => {
+  if (!el) return;
   el.addEventListener('pointerenter', () => { clearTimeout(hoverT); hoverT = setTimeout(() => { if (!locked && !busy) select(k); }, CONFIG.hoverDelay); });
   el.addEventListener('pointerleave', () => clearTimeout(hoverT));
   el.addEventListener('click', () => { clearTimeout(hoverT); if (locked || busy) return; select(k); confirmSel(); });
 });
-const hubHit = $('.hubhit');
-hubHit.addEventListener('pointerenter', () => { if (!locked && !busy) select(RANDOM); });
+const hubHit = $('#hubHit');
+hubHit.addEventListener('pointerenter', () => { clearTimeout(hoverT); if (!locked && !busy) select(RANDOM); });
 hubHit.addEventListener('click', () => { if (locked || busy) return; select(RANDOM); confirmSel(); });
 stage.addEventListener('contextmenu', e => { e.preventDefault(); cancel(); });
 const DIRS = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
@@ -546,7 +535,7 @@ const q = new URLSearchParams(location.search).get('start');
 let start = CONFIG.startWith | 0;
 if (q) start = isNaN(+q) ? ROSTER.findIndex(f => f.name.toLowerCase() === q.toLowerCase()) : +q - 1;
 select(Math.min(Math.max(start, 0), N - 1), 'none');
-document.fonts && document.fonts.ready.then(fitName);
+document.fonts && document.fonts.ready.then(() => setCaption($('#cap-no').textContent, $('#cap-name').textContent, false));
 ROSTER.forEach((_, k) => setTimeout(() => mediaFor(k), 1600 + k * 300));
 window.ALTER_EGO = { select, lock, cancel, roster: ROSTER, ext: EXT };
 })();

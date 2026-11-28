@@ -4,7 +4,7 @@ A fighting-game character select for the *Alter Ego* trailer by William Yao. Fif
 
 **Play it:**
 - Landscape: https://thewilliamyao.github.io/alter-ego-select/
-- Vertical, laid out like the Alter Ego poster for vertical video: https://thewilliamyao.github.io/alter-ego-select/poster.html
+- Vertical, drawn like the *Alter Egos* poster, for vertical video: https://thewilliamyao.github.io/alter-ego-select/poster.html
 
 ![Alter Ego character select](preview.jpg)
 
